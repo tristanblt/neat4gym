@@ -5,7 +5,3 @@ using namespace neat;
 Network::Network()
 {
 }
-
-Network::~Network()
-{
-}
