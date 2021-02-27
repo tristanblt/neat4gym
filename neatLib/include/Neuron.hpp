@@ -11,11 +11,12 @@ namespace neat {
         Neuron();
         ~Neuron();
 
-        void link(Neuron &other);
-        void unlink(Neuron &other);
+        static void link(Neuron &from, Neuron &to);
+        static void unlink(Neuron &from, Neuron &to);
 
         private:
             std::vector<Link> _links;
+            int _layer = 0;
     };
 
 }

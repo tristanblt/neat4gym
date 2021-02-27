@@ -12,7 +12,7 @@ namespace neat {
         Neuron *from;
         Neuron *to;
 
-        float weight;
+        float weight = 1;
     };
 
 }
