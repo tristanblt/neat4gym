@@ -7,7 +7,7 @@ namespace neat {
     struct Neuron;
 
     struct Link {
-        Link(Neuron &from, Neuron &to);
+        Link(Neuron *from, Neuron *to);
 
         Neuron *from;
         Neuron *to;

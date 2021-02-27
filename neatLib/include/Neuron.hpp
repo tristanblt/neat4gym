@@ -8,15 +8,19 @@
 namespace neat {
 
     struct Neuron {
-        Neuron();
+        Neuron(int id);
         ~Neuron();
 
-        static void link(Neuron &from, Neuron &to);
-        static void unlink(Neuron &from, Neuron &to);
+        static void link(Neuron *from, Neuron *to);
+        static void unlink(Neuron *from, Neuron *to);
 
         private:
-            std::vector<Link> _links;
+            std::vector<Link> _from;
+            std::vector<Link> _to;
             int _layer = 0;
+            float _value;
+
+            int _id;
     };
 
 }

@@ -4,19 +4,24 @@
 
 using namespace neat;
 
-Neuron::Neuron() = default;
+Neuron::Neuron(int id) : _id(id) {
+
+};
 
 Neuron::~Neuron() = default;
 
-void Neuron::link(Neuron &from, Neuron &to)
+void Neuron::link(Neuron *from, Neuron *to)
 {
-    from._links.emplace_back(from, to);
-    to._links.emplace_back(from, to);
+    from->_to.emplace_back(from, to);
+    to->_from.emplace_back(from, to);
 }
 
-void Neuron::unlink(Neuron &from, Neuron &to)
+void Neuron::unlink(Neuron *from, Neuron *to)
 {
-    std::find_if(from._links.begin(), from._links.end(), [](const Link &link) {
-
-    });
+    from->_to.erase(std::find_if(from->_to.begin(), from->_to.end(), [&to](Link &link) {
+        return link.to == to;
+    }));
+    to->_from.erase(std::find_if(to->_from.begin(), to->_from.end(), [&from](Link &link) {
+        return link.from == from;
+    }));
 }
