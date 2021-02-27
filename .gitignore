@@ -1,8 +1,8 @@
 .vscode
 build
-gym4neatWrapper/CMakeFiles
-gym4neatWrapper/cmake_install.cmake
-gym4neatWrapper/CMakeCache.txt
-gym4neatWrapper/gym4neatWrapper
-gym4neatWrapper/Makefile
-gym4neat
+
+*.so
+*.o
+
+.ccls-cache
+compile_commands.json
