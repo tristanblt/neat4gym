@@ -5,10 +5,11 @@
 
 namespace neat {
     struct Population {
-        Population(int startPopulation);
+        Population(int startPopulation, int outputs, int inputs);
         ~Population() = default;
 
         private:
+            std::vector<std::unique_ptr<Network>> _networks;
             std::vector<Species> _species;
     };
 }
