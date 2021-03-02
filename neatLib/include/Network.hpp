@@ -19,6 +19,7 @@ namespace neat {
 
         void mutate();
 
+        float fitness = 0;
 
         private:
             void rebuildNetwork();

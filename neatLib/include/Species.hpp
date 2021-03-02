@@ -9,6 +9,8 @@ namespace neat {
             Species();
             ~Species() = default;
 
+            Network &getBestNetwork() const;
+
         private:
             std::vector<Network *> _networks;
     };

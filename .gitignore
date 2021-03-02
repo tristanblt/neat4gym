@@ -5,4 +5,5 @@ build
 *.o
 
 .ccls-cache
+.cache
 compile_commands.json
