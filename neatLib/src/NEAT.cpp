@@ -2,8 +2,8 @@
 
 using namespace neat;
 
-NEAT::NEAT(int pop):
-    _pop(pop)
+NEAT::NEAT(int pop, int outputs, int inputs):
+    _pop(pop, outputs, inputs)
 {
 }
 
