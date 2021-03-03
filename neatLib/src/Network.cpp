@@ -8,9 +8,34 @@ Network::Network(int inputs, int outputs)
     _outputs.reserve(outputs);
 
     for (int i = 0; i < inputs; i++)
-        _inputs.emplace_back(getNextNeuronId());
+        _inputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
     for (int i = 0; i < outputs; i++)
-        _outputs.emplace_back(getNextNeuronId());
+        _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
+}
+
+std::vector<float> Network::compute(const std::vector<float> &inputs) const
+{
+
+}
+
+Network Network::crossover(const Network &a, const Network &b)
+{
+
+}
+
+float Network::computeSimilarity(const Network &a, const Network &b)
+{
+
+}
+
+void Network::mutate()
+{
+
+}
+
+void Network::rebuildNetwork()
+{
+
 }
 
 int Network::getNextNeuronId()

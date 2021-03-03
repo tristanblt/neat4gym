@@ -9,7 +9,7 @@ namespace neat {
 
     struct Neuron {
         Neuron(int id);
-        ~Neuron();
+        ~Neuron() = default;
 
         static void link(Neuron *from, Neuron *to);
         static void unlink(Neuron *from, Neuron *to);

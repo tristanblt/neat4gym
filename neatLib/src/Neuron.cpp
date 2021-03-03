@@ -8,8 +8,6 @@ Neuron::Neuron(int id) : _id(id) {
 
 };
 
-Neuron::~Neuron() = default;
-
 void Neuron::link(Neuron *from, Neuron *to)
 {
     from->_to.emplace_back(from, to);

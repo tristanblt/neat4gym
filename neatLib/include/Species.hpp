@@ -4,12 +4,11 @@
 #include "Network.hpp"
 
 namespace neat {
-    class Species {
-        public:
-            Species();
-            ~Species() = default;
+    struct Species {
+        Species();
+        ~Species() = default;
 
-            Network &getBestNetwork() const;
+        Network &getBestNetwork() const;
 
         private:
             std::vector<Network *> _networks;
