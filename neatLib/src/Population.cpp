@@ -4,9 +4,12 @@ using namespace neat;
 
 Population::Population(int startPopulation, int outputs, int inputs)
 {
-    _networks.reserve(startPopulation);
-    // TODO: create neurons
-    // TODO: create initial species
+    auto newSpecies = _species.emplace_back(this);
+
+    for (int i = 0; i < startPopulation; i++) {
+        _networks.push_back(std::make_unique<Network>(inputs, outputs));
+        newSpecies.addNetworkToSpecies(_networks[_networks.size() - 1].get());
+    }
 }
 
 void Population::computeBest(const std::vector<float> &inputs, std::vector<float> &outputs) const
@@ -42,7 +45,9 @@ size_t Population::size() const
 
 void Population::computeSpecies(const Settings &settings)
 {
-
+    for (auto &spec : _species) {
+        spec.computeSpecies(settings);
+    }
 }
 
 void Population::purge(const Settings &settings)
@@ -70,8 +75,8 @@ void Population::findOrCreateSpecies(Network *network, const Settings &settings)
     }
 
     if (bestSimilarity >= settings.similarity && mostCompatibleSpecies) {
-        // TODO: add network to species
+        mostCompatibleSpecies->addNetworkToSpecies(network);
     } else if (bestSimilarity < settings.similarity) {
-        // TODO: create new species for this network
+        _species.emplace_back(this).addNetworkToSpecies(network);
     }
 }

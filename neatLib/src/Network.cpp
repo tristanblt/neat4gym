@@ -25,6 +25,9 @@ Network Network::crossover(const Network &a, const Network &b)
 
 float Network::computeSimilarity(const Network &a, const Network &b)
 {
+    size_t N = a._innovations.size() > b._innovations.size() ?
+        a._innovations.size() : b._innovations.size();
+
 
 }
 

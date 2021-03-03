@@ -26,8 +26,6 @@ namespace neat {
 
         /**
          * This function lets you kill off members of species
-         * @param toKill Percentage of species members to kill
-         * @return void
          */
         void purge(const Settings &settings);
 

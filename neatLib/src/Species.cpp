@@ -52,3 +52,8 @@ float Species::computeSpeciesSimilarity(Network *network)
 {
     return (Network::computeSimilarity(*_representativeNetwork, *network));
 }
+
+void Species::addNetworkToSpecies(Network *network)
+{
+    _networks.push_back(network);
+}
