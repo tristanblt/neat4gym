@@ -6,6 +6,7 @@
 
 #include "Neuron.hpp"
 #include "Genome.hpp"
+#include "Settings.hpp"
 
 namespace neat {
     struct Network {

@@ -4,14 +4,22 @@
 #include "Network.hpp"
 
 namespace neat {
+    struct Population;
+
     struct Species {
-        Species();
+        Species(Population *population);
         ~Species() = default;
 
-        Network &getBestNetwork() const;
+        Network *getBestNetwork() const;
+        void computeSpecies(const Settings &settings);
+        float computeSpeciesSimilarity(Network *network);
 
         private:
+            void excludeNetwork(Network *networkToExclude, const Settings &settings);
+
             std::vector<Network *> _networks;
+            Network *_representativeNetwork;
+            Population *_population;
     };
 }
 

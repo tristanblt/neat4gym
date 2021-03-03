@@ -1,6 +1,8 @@
 #ifndef POPULATION_HPP_
 #define POPULATION_HPP_
 
+#include <limits>
+
 #include "Species.hpp"
 #include "Settings.hpp"
 
@@ -30,6 +32,8 @@ namespace neat {
         void purge(const Settings &settings);
 
         void genOffsprings(const Settings &settings);
+
+        void findOrCreateSpecies(Network *network, const Settings &settings);
 
         private:
             std::vector<std::unique_ptr<Network>> _networks;
