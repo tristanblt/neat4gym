@@ -5,7 +5,7 @@
 
 namespace neat {
     struct Genome {
-        Genome(int innovationId);
+        Genome(int innovationId, int from, int to, float w);
         ~Genome() = default;
 
         int neuronFromId;
@@ -15,7 +15,7 @@ namespace neat {
 
         int innovationId;
 
-        bool enabled;
+        bool enabled = true;
     };
 }
 

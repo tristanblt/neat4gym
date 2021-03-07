@@ -4,9 +4,9 @@
 
 using namespace neat;
 
-Neuron::Neuron(int id) : _id(id) {
-
-};
+Neuron::Neuron(int _id):
+    id(_id)
+{}
 
 void Neuron::link(Neuron *from, Neuron *to)
 {
@@ -22,4 +22,32 @@ void Neuron::unlink(Neuron *from, Neuron *to)
     to->_from.erase(std::find_if(to->_from.begin(), to->_from.end(), [&from](Link &link) {
         return link.from == from;
     }));
+}
+
+void Neuron::computeLayersRec(size_t i)
+{
+    if (i >= _to.size())
+        return;
+    if (_to[i].to->layer < layer + 1)
+        _to[i].to->layer = layer + 1;
+    computeLayersRec(i + 1);
+    _to[i].to->computeLayersRec();
+}
+
+Neuron *Neuron::getNeuronTo(int id) const
+{
+    for (auto &link: _to) {
+        if (link.to->id == id)
+            return link.to;
+    }
+    return nullptr;
+}
+
+Link *Neuron::getLinkTo(int id)
+{
+    for (auto &link: _to) {
+        if (link.to->id == id)
+            return &link;
+    }
+    return nullptr;
 }

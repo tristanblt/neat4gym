@@ -14,13 +14,18 @@ namespace neat {
         static void link(Neuron *from, Neuron *to);
         static void unlink(Neuron *from, Neuron *to);
 
+        const int id;
+        int layer = 0;
+
+        void computeLayersRec(size_t i = 0);
+
+        Neuron *getNeuronTo(int id) const;
+        Link *getLinkTo(int id);
+
         private:
             std::vector<Link> _from;
             std::vector<Link> _to;
-            int _layer = 0;
             float _value;
-
-            int _id;
     };
 
 }
