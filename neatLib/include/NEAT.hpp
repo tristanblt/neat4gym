@@ -4,6 +4,7 @@
 
 #include "Population.hpp"
 #include <functional>
+#include <iostream>
 
 namespace neat {
 

@@ -4,6 +4,7 @@
 #include "GymRequests.hpp"
 #include <string>
 #include <vector>
+#include "NEAT.hpp"
 
 class Agent {
     public:
@@ -15,7 +16,7 @@ class Agent {
     protected:
     private:
         GymRequests _gr;
-        std::string _instance_id;
+        std::string _instanceId;
 };
 
 #endif /* !AGENT_HPP_ */
