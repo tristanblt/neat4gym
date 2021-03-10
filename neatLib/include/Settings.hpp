@@ -14,6 +14,9 @@ namespace neat {
         float interspeciesCrossoverRate = 0.001;
         float addNodeRate = 0.03;
         float addLinkRate = 0.03;
+        float similarityCoefExcess = 1;
+        float similarityCoefDisjoint = 1;
+        float similarityCoefWeight = 0.4;
     };
 }
 

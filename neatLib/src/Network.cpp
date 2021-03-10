@@ -1,5 +1,6 @@
 #include "Network.hpp"
 #include "Link.hpp"
+#include <algorithm>
 
 using namespace neat;
 
@@ -31,12 +32,50 @@ Network Network::crossover(const Network &a, const Network &b)
 
 }
 
-float Network::computeSimilarity(const Network &a, const Network &b)
+float Network::computeSimilarity(const Network &a, const Network &b, const Settings &settings)
 {
-    size_t N = a._innovations.size() > b._innovations.size() ?
+    size_t n = a._innovations.size() > b._innovations.size() ?
         a._innovations.size() : b._innovations.size();
+    const auto &listBig = a._innovations.back().innovationId > b._innovations.back().innovationId ?
+        a._innovations : b._innovations;
+    const auto &listSmall = a._innovations.back().innovationId <= b._innovations.back().innovationId ?
+        a._innovations : b._innovations;
+    int excess = 0;
+    int disjoint = 0;
+    int similar = 0;
+    float weightDiff = 0;
 
-    return 0;
+    int maxInnovatoinIdSmall = listSmall.back().innovationId;
+
+    for (const auto &elem: listBig) {
+        if (elem.innovationId > maxInnovatoinIdSmall) {
+            excess++;
+            continue;
+        }
+        auto pos = std::find_if(std::begin(listSmall), std::end(listSmall), [&elem](const Genome &genome) {
+            return genome.innovationId == elem.innovationId;
+        });
+        if (pos == std::end(listSmall))
+            disjoint++;
+    }
+
+    for (const auto &elem: listSmall) {
+        auto pos = std::find_if(std::begin(listBig), std::end(listBig), [&elem](const Genome &genome) {
+            return genome.innovationId == elem.innovationId;
+        });
+        if (pos == std::end(listBig)) {
+            disjoint++;
+            continue;
+        }
+        similar++;
+        weightDiff += pos->linkWeight - elem.linkWeight;
+    }
+
+    float averageWeightDiff = weightDiff / (float)similar;
+
+    return (settings.similarityCoefExcess * excess) / n +
+        (settings.similarityCoefDisjoint * disjoint) / n +
+        averageWeightDiff * settings.similarityCoefWeight;
 }
 
 bool Network::mutateWeight(int from, int to, float delta, bool set)
@@ -141,9 +180,9 @@ void Network::rebuildNetwork()
     _outputs.clear();
     _nextNeuronId = 1;
 
-    for (int i = 0; i < inputsSize; i++)
+    for (size_t i = 0; i < inputsSize; i++)
         _inputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
-    for (int i = 0; i < outputsSize; i++)
+    for (size_t i = 0; i < outputsSize; i++)
         _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
 
     for (auto &genome : _innovations) {

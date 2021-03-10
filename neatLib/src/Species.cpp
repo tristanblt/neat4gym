@@ -1,5 +1,6 @@
 #include "Species.hpp"
 #include "Population.hpp"
+#include <algorithm>
 
 using namespace neat;
 

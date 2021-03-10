@@ -2,7 +2,6 @@
 #define NETWORK_HPP_
 
 #include <memory>
-#include <list>
 
 #include "Neuron.hpp"
 #include "Genome.hpp"
@@ -16,7 +15,7 @@ namespace neat {
         [[nodiscard]] std::vector<float> compute(const std::vector<float> &inputs, const Settings &settings) const;
 
         [[nodiscard]] static Network crossover(const Network &a, const Network &b);
-        [[nodiscard]] static float computeSimilarity(const Network &a, const Network &b);
+        [[nodiscard]] static float computeSimilarity(const Network &a, const Network &b, const Settings &settings);
 
         /**
          * Mutates a weight if possible, will return false if not.
@@ -37,7 +36,7 @@ namespace neat {
          */
         [[nodiscard]] bool canAddLink(int from, int to) const;
 
-        [[nodiscard]] int createNode();
+        int createNode();
         void disableLink(int from, int to) const;
 
         void computeLayers() const;
@@ -54,7 +53,7 @@ namespace neat {
             std::vector<std::unique_ptr<Neuron>> _hiddens;
             std::vector<std::unique_ptr<Neuron>> _outputs;
 
-            std::list<Genome> _innovations;
+            std::vector<Genome> _innovations;
 
             int _nextNeuronId = 1;
     };

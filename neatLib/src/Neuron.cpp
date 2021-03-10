@@ -35,7 +35,7 @@ void Neuron::computeLayersRec(size_t i)
     _to[i].to->computeLayersRec();
 }
 
-float sigmoid(float x, const Settings &settings)
+static float sigmoid(float x, const Settings &settings)
 {
     return 1.0 / (1.0 + exp(-x * settings.sigmoidMult));
 }
