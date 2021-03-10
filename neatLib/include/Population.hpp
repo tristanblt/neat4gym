@@ -14,7 +14,7 @@ namespace neat {
 
         void computeBest(const std::vector<float> &inputs, std::vector<float> &outputs) const;
 
-        void compute(size_t n, const std::vector<float> &inputs, std::vector<float> &outputs) const;
+        void compute(size_t n, const std::vector<float> &inputs, std::vector<float> &outputs, const Settings &settings) const;
         void setFitness(size_t n, float fitness) const;
 
         size_t size() const;

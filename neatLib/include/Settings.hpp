@@ -10,7 +10,7 @@ namespace neat {
         float weightMutationRate = 0.8;
         float weightRandomRate = 0.1;
         float weightChangeRate = 0.9;
-        float sigmoidLambda = 4.9;
+        float sigmoidMult = 4.9;
         float interspeciesCrossoverRate = 0.001;
         float addNodeRate = 0.03;
         float addLinkRate = 0.03;

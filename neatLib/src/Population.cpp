@@ -28,7 +28,7 @@ void Population::computeBest(const std::vector<float> &inputs, std::vector<float
         outputs = bestNetwork->compute(inputs);
 }
 
-void Population::compute(size_t n, const std::vector<float> &inputs, std::vector<float> &outputs) const
+void Population::compute(size_t n, const std::vector<float> &inputs, std::vector<float> &outputs, const Settings &settings) const
 {
     outputs = _networks[n]->compute(inputs);
 }

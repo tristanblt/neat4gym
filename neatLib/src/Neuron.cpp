@@ -1,6 +1,7 @@
 
 #include "Neuron.hpp"
 #include <algorithm>
+#include <cmath>
 
 using namespace neat;
 
@@ -34,6 +35,19 @@ void Neuron::computeLayersRec(size_t i)
     _to[i].to->computeLayersRec();
 }
 
+float sigmoid(float x, const Settings &settings)
+{
+    return 1.0 / (1.0 + exp(-x * settings.sigmoidMult));
+}
+
+float Neuron::computeValue(const Settings &settings)
+{
+    for (auto &from: _from) {
+        _value += from.from->computeValue(settings) * from.weight;
+    }
+    return sigmoid(_value, settings);
+}
+
 Neuron *Neuron::getNeuronTo(int id) const
 {
     for (auto &link: _to) {
@@ -50,4 +64,9 @@ Link *Neuron::getLinkTo(int id)
             return &link;
     }
     return nullptr;
+}
+
+void Neuron::setValue(float v)
+{
+    _value = v;
 }

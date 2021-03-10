@@ -14,9 +14,16 @@ Network::Network(int inputs, int outputs)
         _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
 }
 
-std::vector<float> Network::compute(const std::vector<float> &inputs) const
+std::vector<float> Network::compute(const std::vector<float> &inputs, const Settings &settings) const
 {
-
+    std::vector<float> values;
+    for (size_t i = 0; i < inputs.size(); ++i )
+        _inputs[i]->setValue(inputs[i]);
+    values.reserve(_outputs.size());
+    for (auto &output: _outputs) {
+        values.push_back(output->computeValue(settings));
+    }
+    return values;
 }
 
 Network Network::crossover(const Network &a, const Network &b)
