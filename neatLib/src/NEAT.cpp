@@ -5,6 +5,7 @@ using namespace neat;
 NEAT::NEAT(int pop, int inputs, int outputs):
     _pop(pop, outputs, inputs)
 {
+    srand(time(NULL));
 }
 
 NEAT::~NEAT() = default;
