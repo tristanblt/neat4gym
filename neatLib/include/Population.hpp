@@ -12,7 +12,7 @@ namespace neat {
         Population(int startPopulation, int outputs, int inputs);
         ~Population() = default;
 
-        void computeBest(const std::vector<float> &inputs, std::vector<float> &outputs) const;
+        void computeBest(const std::vector<float> &inputs, std::vector<float> &outputs, const Settings &settings) const;
 
         void compute(size_t n, const std::vector<float> &inputs, std::vector<float> &outputs, const Settings &settings) const;
         void setFitness(size_t n, float fitness) const;

@@ -18,7 +18,7 @@ const NEAT::Data &NEAT::step(bool isOver, float fitness, const std::vector<float
             prepareNextGeneration();
         }
     }
-    _pop.compute(_data.currentIndividual, inputs, _data.outputs);
+    _pop.compute(_data.currentIndividual, inputs, _data.outputs, settings);
     return _data;
 }
 

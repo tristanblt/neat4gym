@@ -12,7 +12,7 @@ Population::Population(int startPopulation, int outputs, int inputs)
     }
 }
 
-void Population::computeBest(const std::vector<float> &inputs, std::vector<float> &outputs) const
+void Population::computeBest(const std::vector<float> &inputs, std::vector<float> &outputs, const Settings &settings) const
 {
     Network *bestNetwork = nullptr;
     float bestFitness = std::numeric_limits<float>::min();
@@ -25,12 +25,12 @@ void Population::computeBest(const std::vector<float> &inputs, std::vector<float
         }
     }
     if (bestNetwork)
-        outputs = bestNetwork->compute(inputs);
+        outputs = bestNetwork->compute(inputs, settings);
 }
 
 void Population::compute(size_t n, const std::vector<float> &inputs, std::vector<float> &outputs, const Settings &settings) const
 {
-    outputs = _networks[n]->compute(inputs);
+    outputs = _networks[n]->compute(inputs, settings);
 }
 
 void Population::setFitness(size_t n, float fitness) const

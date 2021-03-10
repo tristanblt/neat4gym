@@ -48,9 +48,15 @@ bool Network::mutateWeight(int from, int to, float delta, bool set)
     auto *link = n1->getLinkTo(to);
     if (!link)
         return false;
-    if (set) {
+    if (set)
         link->weight = delta;
-    }
+    else
+        link->weight += delta;
+    for (auto &genome : _innovations)
+        if (genome.neuronFromId == from && genome.neuronToId == to) {
+            genome.linkWeight = link->weight;
+            break;
+        }
     return true;
 }
 
@@ -73,7 +79,8 @@ bool Network::addLink(int from, int to, int innovationId, float weight)
     if (!n1 || !n2 || n1->layer < n2->layer || (n1->layer == 0 && n2->layer == 0))
         return false;
     Neuron::link(n1, n2);
-    _innovations.emplace_back(innovationId, from, to, weight);
+    if (innovationId != -1)
+        _innovations.emplace_back(innovationId, from, to, weight);
     return true;
 }
 
@@ -126,6 +133,28 @@ bool Network::canAddLink(int from, int to) const
 
 void Network::rebuildNetwork()
 {
+    size_t inputsSize = _inputs.size();
+    size_t outputsSize = _outputs.size();
+
+    _inputs.clear();
+    _hiddens.clear();
+    _outputs.clear();
+    _nextNeuronId = 1;
+
+    for (int i = 0; i < inputsSize; i++)
+        _inputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
+    for (int i = 0; i < outputsSize; i++)
+        _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
+
+    for (auto &genome : _innovations) {
+        if (getNeuron(genome.neuronFromId) == nullptr)
+            createNode();
+        if (getNeuron(genome.neuronToId) == nullptr)
+            createNode();
+        if (!genome.enabled)
+            continue;
+        addLink(genome.neuronFromId, genome.neuronToId, -1, genome.linkWeight);
+    }
 }
 
 int Network::getNextNeuronId()
