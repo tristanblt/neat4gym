@@ -8,6 +8,9 @@ namespace neat {
         Genome(int innovationId, int from, int to, float w);
         ~Genome() = default;
 
+        Genome(const Genome &) = default;
+        Genome &operator=(const Genome &) = default;
+
         int neuronFromId;
         int neuronToId;
 

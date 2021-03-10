@@ -27,9 +27,38 @@ std::vector<float> Network::compute(const std::vector<float> &inputs, const Sett
     return values;
 }
 
-Network Network::crossover(const Network &a, const Network &b)
+std::unique_ptr<Network> Network::crossover(const Network &a, const Network &b)
 {
+    const Network &best = a.fitness > b.fitness ? a : b;
+    const Network &worst = b.fitness > a.fitness ? a : b;
+    std::unique_ptr<Network> child = std::make_unique<Network>(a._inputs.size(), a._outputs.size());
 
+    int maxInnovatoinIdWorst = worst._innovations.back().innovationId;
+    for (const auto &elem: best._innovations) {
+        if (elem.innovationId > maxInnovatoinIdWorst) {
+            // excess
+            child->_innovations.push_back(elem);
+            continue;
+        }
+        auto other = std::find_if(std::begin(worst._innovations), std::end(worst._innovations), [&elem](const Genome &genome) {
+            return genome.innovationId == elem.innovationId;
+        });
+        if (other == std::end(worst._innovations)) {
+            // disjoint
+            child->_innovations.push_back(elem);
+            continue;
+        }
+        // matching
+        if (rand() % 2) {
+            child->_innovations.push_back(elem);
+        } else {
+            child->_innovations.push_back(*other);
+        }
+    }
+
+
+    child->rebuildNetwork();
+    return child;
 }
 
 float Network::computeSimilarity(const Network &a, const Network &b, const Settings &settings)

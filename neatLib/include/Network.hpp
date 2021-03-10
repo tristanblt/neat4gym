@@ -12,9 +12,12 @@ namespace neat {
         Network(int inputs, int outputs);
         ~Network() = default;
 
+        Network(const Network &) = delete;
+        Network &operator=(const Network &rhs) = delete;
+
         [[nodiscard]] std::vector<float> compute(const std::vector<float> &inputs, const Settings &settings) const;
 
-        [[nodiscard]] static Network crossover(const Network &a, const Network &b);
+        [[nodiscard]] static std::unique_ptr<Network> crossover(const Network &a, const Network &b);
         [[nodiscard]] static float computeSimilarity(const Network &a, const Network &b, const Settings &settings);
 
         /**
