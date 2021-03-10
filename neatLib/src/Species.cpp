@@ -68,7 +68,7 @@ void Species::purge(size_t nb)
     for (size_t i = _networks.size() - 1; i > _networks.size() - nb && i > 0; i--) {
         _networks[i]->dead = true;
     }
-    _networks.erase(std::remove(_networks.begin(), _networks.end(), [](const Network *elem) {
+    _networks.erase(std::remove_if(_networks.begin(), _networks.end(), [](Network *elem) {
         return elem->dead;
     }), _networks.end());
 }
@@ -89,7 +89,7 @@ std::unique_ptr<Network> Species::getOffspring(const Settings &settings)
         } while (second == first);
         offspring = Network::crossover(*_networks[first], *_networks[second]);
     } else {
-        offspring = std::make_unique<Network>(_networks[currentInNewGen % _networks.size()]);
+        offspring = std::make_unique<Network>(*_networks[currentInNewGen % _networks.size()]);
     }
     currentInNewGen++;
     return offspring;

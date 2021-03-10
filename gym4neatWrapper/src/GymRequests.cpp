@@ -69,10 +69,16 @@ GymRequests::Space GymRequests::actionSpace(const std::string &instanceId)
         httpResponse
     );
 
+    std::cout << httpResponse.strBody << std::endl;
+    std::cout << instanceId << std::endl;
     json response = json::parse(httpResponse.strBody);
-
-    space.n = response["info"]["n"];
+    std::cout << "hihi" << std::endl;
     space.name = response["info"]["name"];
+
+    if (space.name == "Discrete")
+        space.n = response["info"]["n"];
+    else
+        space.n = response["info"]["shape"][0];
     return (space);
 }
 
@@ -86,11 +92,15 @@ GymRequests::Space GymRequests::observationSpace(const std::string &instanceId)
         _headers,
         httpResponse
     );
+    std::cout << httpResponse.strBody << std::endl;
 
     json response = json::parse(httpResponse.strBody);
 
-    space.n = response["info"]["shape"][0];
     space.name = response["info"]["name"];
+    if (space.name == "Discrete")
+        space.n = response["info"]["n"];
+    else
+        space.n = response["info"]["shape"][0];
     return (space);
 }
 
