@@ -66,7 +66,7 @@ void Population::findOrCreateSpecies(Network *network, const Settings &settings)
     Species *mostCompatibleSpecies = nullptr;
 
     for (auto &spec : _species) {
-        float similarity = spec.computeSpeciesSimilarity(network);
+        float similarity = spec.computeSpeciesSimilarity(network, settings);
 
         if (similarity > bestSimilarity) {
             bestSimilarity = similarity;

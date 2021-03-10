@@ -12,7 +12,7 @@ namespace neat {
 
         Network *getBestNetwork() const;
         void computeSpecies(const Settings &settings);
-        float computeSpeciesSimilarity(Network *network);
+        float computeSpeciesSimilarity(Network *network, const Settings &settings);
         void addNetworkToSpecies(Network *network);
 
         private:

@@ -28,7 +28,8 @@ void Species::computeSpecies(const Settings &settings)
     for (auto &network : _networks) {
         float similarity = Network::computeSimilarity(
             *_representativeNetwork,
-            *network
+            *network,
+            settings
         );
 
         if (similarity < settings.similarity) {
@@ -49,9 +50,9 @@ void Species::excludeNetwork(Network *networkToExclude, const Settings &settings
     _networks.erase(toExclude);
 }
 
-float Species::computeSpeciesSimilarity(Network *network)
+float Species::computeSpeciesSimilarity(Network *network, const Settings &settings)
 {
-    return (Network::computeSimilarity(*_representativeNetwork, *network));
+    return (Network::computeSimilarity(*_representativeNetwork, *network, settings));
 }
 
 void Species::addNetworkToSpecies(Network *network)
