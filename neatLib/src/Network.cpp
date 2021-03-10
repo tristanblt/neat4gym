@@ -156,3 +156,14 @@ Neuron *Network::getNeuron(int id) const
     }
     return nullptr;
 }
+
+void Network::disableLink(int from, int to) const
+{
+    auto fromNeuron = getNeuron(from);
+
+    if (!fromNeuron)
+        return;
+    auto *link = fromNeuron->getLinkTo(to);
+    if (link)
+        Neuron::unlink(fromNeuron, link->to);
+}
