@@ -14,5 +14,7 @@ find_package(nlohmann_json 3.2.0 REQUIRED)
 add_executable(gym4neatWrapper ${PROJECT_SOURCES})
 
 target_include_directories(gym4neatWrapper PUBLIC "${PROJECT_SOURCE_DIR}/gym4neatWrapper/include/")
+target_include_directories(gym4neatWrapper PUBLIC "${PROJECT_SOURCE_DIR}/../neatLib/include/")
 
 target_link_libraries(gym4neatWrapper PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(gym4neatWrapper PRIVATE neatLib)

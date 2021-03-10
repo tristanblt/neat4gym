@@ -29,8 +29,9 @@ Network::Network(const Network &n)
 std::vector<float> Network::compute(const std::vector<float> &inputs, const Settings &settings) const
 {
     std::vector<float> values;
-    for (size_t i = 0; i < inputs.size(); ++i )
+    for (size_t i = 0; i < inputs.size(); ++i ) {
         _inputs[i]->setValue(inputs[i]);
+    }
     values.reserve(_outputs.size());
     for (auto &output: _outputs) {
         values.push_back(output->computeValue(settings));

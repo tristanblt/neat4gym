@@ -12,16 +12,28 @@ class GymRequests {
         GymRequests();
         ~GymRequests();
 
+        struct StepData {
+            std::vector<float> inputs;
+            float score;
+            bool isOver;
+        };
+
+        struct Space {
+            std::string name;
+            int n;
+        };
+
         std::string createInstance(const std::string &env);
-        void startMonitor(const std::string &instance_id);
-        void closeMonitor(const std::string &instance_id);
-        void step(const std::string &instance_id, const std::vector<float> &action);
-        void reset(const std::string &instance_id);
+        void startMonitor(const std::string &instanceId);
+        void closeMonitor(const std::string &instanceId);
+        Space actionSpace(const std::string &instanceId);
+        Space observationSpace(const std::string &instanceId);
+        StepData step(const std::string &instanceId, const std::vector<float> &action);
+        std::vector<float> reset(const std::string &instanceId);
 
     protected:
     private:
         CHTTPClient::HeadersMap _headers;
-        CHTTPClient::HttpResponse _response;
         CHTTPClient *_client;
 };
 
