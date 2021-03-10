@@ -59,3 +59,38 @@ void Species::addNetworkToSpecies(Network *network)
 {
     _networks.push_back(network);
 }
+
+void Species::purge(size_t nb)
+{
+    std::sort(_networks.begin(), _networks.end(), [](const Network *n1, const Network *n2) {
+        return n1->fitness < n2->fitness;
+    });
+    for (size_t i = _networks.size() - 1; i > _networks.size() - nb && i > 0; i--) {
+        _networks[i]->dead = true;
+    }
+    _networks.erase(std::remove(_networks.begin(), _networks.end(), [](const Network *elem) {
+        return elem->dead;
+    }), _networks.end());
+}
+
+size_t Species::size() const
+{
+    return _networks.size();
+}
+
+std::unique_ptr<Network> Species::getOffspring(const Settings &settings)
+{
+    std::unique_ptr<Network> offspring;
+    if (_networks.size() > 1 && Settings::doRand(settings.crossoverRate)) {
+        int first = currentInNewGen % _networks.size();
+        int second = 0;
+        do {
+            second = rand() % _networks.size();
+        } while (second == first);
+        offspring = Network::crossover(*_networks[first], *_networks[second]);
+    } else {
+        offspring = std::make_unique<Network>(_networks[currentInNewGen % _networks.size()]);
+    }
+    currentInNewGen++;
+    return offspring;
+}

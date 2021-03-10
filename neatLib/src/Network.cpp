@@ -15,6 +15,17 @@ Network::Network(int inputs, int outputs)
         _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
 }
 
+Network::Network(const Network &n)
+{
+    _inputs.reserve(n._inputs.size());
+    _outputs.reserve(n._outputs.size());
+
+    for (size_t i = 0; i < n._inputs.size(); i++)
+        _inputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
+    for (size_t i = 0; i < n._outputs.size(); i++)
+        _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
+}
+
 std::vector<float> Network::compute(const std::vector<float> &inputs, const Settings &settings) const
 {
     std::vector<float> values;

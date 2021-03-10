@@ -1,8 +1,10 @@
 #include "Population.hpp"
+#include <algorithm>
 
 using namespace neat;
 
-Population::Population(int startPopulation, int outputs, int inputs)
+Population::Population(int startPopulation, int outputs, int inputs):
+    _startPopSize(startPopulation)
 {
     auto newSpecies = _species.emplace_back(this);
 
@@ -52,12 +54,38 @@ void Population::computeSpecies(const Settings &settings)
 
 void Population::purge(const Settings &settings)
 {
-
+    for (auto &specie: _species) {
+        specie.maxPop = specie.size() * 1.2;
+        if (specie.maxPop < 5)
+            specie.maxPop += 2;
+        specie.purge(settings.toKill * specie.size());
+    }
+    _networks.erase(
+        std::remove_if(std::begin(_networks), std::end(_networks), [](const std::unique_ptr<Network> &network) {
+            return network->dead;
+        }),
+        std::end(_networks)
+    );
 }
 
 void Population::genOffsprings(const Settings &settings)
 {
+    int currentSpecie = 0;
+    std::vector<std::unique_ptr<Network>> offsprings;
+    while (offsprings.size() < _startPopSize) {
+        if (Settings::doRand(settings.interspeciesCrossoverRate)) {
+            offsprings.emplace_back(Network::crossover(
+                                        *_networks[rand() % _networks.size()],
+                                        *_networks[rand() % _networks.size()]
+                                    ));
+            continue;
+        }
 
+        offsprings.emplace_back(_species[currentSpecie].getOffspring(settings));
+        while (_species[currentSpecie].maxPop >= _species[currentSpecie].currentInNewGen) {
+            currentSpecie = (currentSpecie + 1) % _species.size();
+        }
+    }
 }
 
 void Population::findOrCreateSpecies(Network *network, const Settings &settings)

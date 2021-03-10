@@ -12,13 +12,15 @@ namespace neat {
         Network(int inputs, int outputs);
         ~Network() = default;
 
-        Network(const Network &) = delete;
+        Network(const Network &network);
         Network &operator=(const Network &rhs) = delete;
 
         [[nodiscard]] std::vector<float> compute(const std::vector<float> &inputs, const Settings &settings) const;
 
         [[nodiscard]] static std::unique_ptr<Network> crossover(const Network &a, const Network &b);
         [[nodiscard]] static float computeSimilarity(const Network &a, const Network &b, const Settings &settings);
+
+
 
         /**
          * Mutates a weight if possible, will return false if not.
@@ -47,6 +49,7 @@ namespace neat {
         float fitness = 0;
 
         Neuron *getNeuron(int id) const;
+        bool dead = false;
 
         private:
             void rebuildNetwork();
