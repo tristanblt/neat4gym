@@ -19,6 +19,11 @@ namespace neat {
         float similarityCoefExcess = 1;
         float similarityCoefDisjoint = 1;
         float similarityCoefWeight = 0.4;
+        float mutationChangeWeight = 0.1;
+        int maxMutations = 10;
+        int minMutations = 5;
+        float doMutation = 0.9;
+        float maxMutation = 1.0;
 
         static bool doRand(float value) {
             return rand() % ((int)(1.0 / value) * 1000) < 1000;

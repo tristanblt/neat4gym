@@ -24,6 +24,9 @@ Network::Network(const Network &n)
         _inputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
     for (size_t i = 0; i < n._outputs.size(); i++)
         _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
+
+    _innovations = n._innovations;
+    rebuildNetwork();
 }
 
 std::vector<float> Network::compute(const std::vector<float> &inputs, const Settings &settings) const
@@ -156,7 +159,7 @@ bool Network::addLink(int from, int to, int innovationId, float weight)
 {
     Neuron *n1 = getNeuron(from), *n2 = getNeuron(to);
 
-    if (!n1 || !n2 || n1->layer < n2->layer || (n1->layer == 0 && n2->layer == 0))
+    if (!n1 || !n2 || n1->layer < n2->layer || (n1->layer == 0 && n2->layer == 0) || hasLink(from, to))
         return false;
     Neuron::link(n1, n2);
     if (innovationId != -1)
@@ -189,22 +192,22 @@ bool Network::canAddLink(int from, int to) const
     for (auto &ptr: _hiddens) {
         if (ptr->id == from) {
             if (layer2 != -1)
-                return layer1 <= layer2;
+                return layer1 <= layer2 && !hasLink(from, to);
             layer1 = ptr->layer;
         } else if (ptr->id == to) {
             if (layer1 != -1)
-                return layer1 <= layer2;
+                return layer1 <= layer2 && !hasLink(from, to);
             layer2 = ptr->layer;
         }
     }
     for (auto &ptr: _outputs) {
         if (ptr->id == from) {
             if (layer2 != -1)
-                return layer1 <= layer2;
+                return layer1 <= layer2 && !hasLink(from, to);
             layer1 = ptr->layer;
         } else if (ptr->id == to) {
             if (layer1 != -1)
-                return layer1 <= layer2;
+                return layer1 <= layer2 && !hasLink(from, to);
             layer2 = ptr->layer;
         }
     }
@@ -275,4 +278,32 @@ void Network::disableLink(int from, int to) const
     auto *link = fromNeuron->getLinkTo(to);
     if (link)
         Neuron::unlink(fromNeuron, link->to);
+}
+
+const Genome &Network::getRandomLink() const
+{
+    return _innovations[rand() % _innovations.size()];
+}
+
+void Network::getTwoNeuronIds(int &n1, int &n2) const
+{
+    int layer1 = 0;
+    if (rand() % 2) {
+        auto &neur = _inputs[rand() % _inputs.size()];
+        layer1 = neur->layer;
+        n1 = neur->id;
+    } else {
+        auto &neur = _hiddens[rand() % _hiddens.size()];
+        layer1 = neur->layer;
+        n1 = neur->id;
+    }
+    if (rand() % 2) {
+        n2 = _outputs[rand() % _outputs.size()]->id;
+    } else {
+        auto *neur = &_hiddens[rand() % _hiddens.size()];
+        while (neur->get()->layer < layer1) {
+            neur = &_hiddens[rand() % _hiddens.size()];
+        }
+        n2 = neur->get()->id;
+    }
 }

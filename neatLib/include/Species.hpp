@@ -21,12 +21,15 @@ namespace neat {
         size_t currentInNewGen = 0;
 
         std::unique_ptr<Network> getOffspring(const Settings &settings);
+        void addToNewPop(Network *network);
+        void endReproduction();
 
         private:
             void excludeNetwork(Network *networkToExclude, const Settings &settings);
 
             std::vector<Network *> _networks;
             Network *_representativeNetwork;
+            std::vector<Network *> _newPop;
             Population *_population;
     };
 }

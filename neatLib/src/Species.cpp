@@ -60,6 +60,11 @@ void Species::addNetworkToSpecies(Network *network)
     _networks.push_back(network);
 }
 
+void Species::addToNewPop(Network *network)
+{
+    _newPop.push_back(network);
+}
+
 void Species::purge(size_t nb)
 {
     std::sort(_networks.begin(), _networks.end(), [](const Network *n1, const Network *n2) {
@@ -92,5 +97,12 @@ std::unique_ptr<Network> Species::getOffspring(const Settings &settings)
         offspring = std::make_unique<Network>(*_networks[currentInNewGen % _networks.size()]);
     }
     currentInNewGen++;
+    _newPop.push_back(offspring.get());
     return offspring;
+}
+
+void Species::endReproduction()
+{
+    _networks = _newPop;
+    _newPop.clear();
 }

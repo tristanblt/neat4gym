@@ -34,10 +34,17 @@ namespace neat {
         void findOrCreateSpecies(Network *network, const Settings &settings);
 
         private:
+            void mutateNetworks(const Settings &settings) const;
+            void addLink(const std::unique_ptr<Network> &target, const Settings &settings) const;
+            void mutateLink(const Settings &settings, const std::unique_ptr<Network> &target) const;
+            void addNode(const std::unique_ptr<Network> &target, const Settings &settings) const;
+
             std::vector<std::unique_ptr<Network>> _networks;
             std::vector<Species> _species;
 
             size_t _startPopSize;
+
+            int _innovationId = 0;
     };
 }
 

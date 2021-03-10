@@ -51,6 +51,11 @@ namespace neat {
         Neuron *getNeuron(int id) const;
         bool dead = false;
 
+        int mutations = 0;
+
+        void getTwoNeuronIds(int &n1, int &n2) const;
+        const Genome &getRandomLink() const;
+
         private:
             void rebuildNetwork();
             [[nodiscard]] int getNextNeuronId();
