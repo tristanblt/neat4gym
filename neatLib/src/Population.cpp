@@ -95,7 +95,7 @@ void Population::genOffsprings(const Settings &settings)
             currentSpecie = (currentSpecie + 1) % _species.size();
         }
     }
-    _networks = offsprings;
+    _networks.swap(offsprings);
     for (auto &sp: _species)
         sp.endReproduction();
 }

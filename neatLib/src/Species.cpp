@@ -94,7 +94,7 @@ std::unique_ptr<Network> Species::getOffspring(const Settings &settings)
         } while (second == first);
         offspring = Network::crossover(*_networks[first], *_networks[second]);
     } else {
-        offspring = std::make_unique<Network>(*_networks[currentInNewGen % _networks.size()]);
+        offspring = _networks[currentInNewGen % _networks.size()]->copy();
     }
     currentInNewGen++;
     _newPop.push_back(offspring.get());

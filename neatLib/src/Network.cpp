@@ -1,5 +1,6 @@
 #include "Network.hpp"
 #include "Link.hpp"
+#include "Settings.hpp"
 #include <algorithm>
 
 using namespace neat;
@@ -15,18 +16,13 @@ Network::Network(int inputs, int outputs)
         _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
 }
 
-Network::Network(const Network &n)
+std::unique_ptr<Network> Network::copy() const
 {
-    _inputs.reserve(n._inputs.size());
-    _outputs.reserve(n._outputs.size());
+    std::unique_ptr<Network> n = std::make_unique<Network>(_inputs.size(), _outputs.size());
 
-    for (size_t i = 0; i < n._inputs.size(); i++)
-        _inputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
-    for (size_t i = 0; i < n._outputs.size(); i++)
-        _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
-
-    _innovations = n._innovations;
-    rebuildNetwork();
+    n->_innovations = _innovations;
+    n->rebuildNetwork();
+    return n;
 }
 
 std::vector<float> Network::compute(const std::vector<float> &inputs, const Settings &settings) const
@@ -288,7 +284,8 @@ const Genome &Network::getRandomLink() const
 void Network::getTwoNeuronIds(int &n1, int &n2) const
 {
     int layer1 = 0;
-    if (rand() % 2) {
+    // Chose randomly between inputs and hiddens (given their size)
+    if (Settings::doRand((float)(_inputs.size()) / (float)(_inputs.size() + _hiddens.size()))) {
         auto &neur = _inputs[rand() % _inputs.size()];
         layer1 = neur->layer;
         n1 = neur->id;
@@ -297,11 +294,17 @@ void Network::getTwoNeuronIds(int &n1, int &n2) const
         layer1 = neur->layer;
         n1 = neur->id;
     }
-    if (rand() % 2) {
+    // Chose randomly between outputs and hiddens (given their size)
+    if (Settings::doRand((float)(_outputs.size()) / (float)(_outputs.size() + _hiddens.size()))) {
         n2 = _outputs[rand() % _outputs.size()]->id;
     } else {
         auto *neur = &_hiddens[rand() % _hiddens.size()];
+        int maxTries = std::min((size_t)100, _hiddens.size());
         while (neur->get()->layer < layer1) {
+            if (maxTries-- < 0) {
+                n2 = _outputs[rand() % _outputs.size()]->id;
+                break;
+            }
             neur = &_hiddens[rand() % _hiddens.size()];
         }
         n2 = neur->get()->id;
