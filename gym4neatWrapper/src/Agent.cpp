@@ -17,8 +17,6 @@ void Agent::run()
 
     _gr.startMonitor(_instanceId);
 
-    std::cout << _gr.actionSpace(_instanceId).n << std::endl;
-    std::cout << _gr.observationSpace(_instanceId).n << std::endl;
     neat::NEAT neat(
         1000,
         _gr.observationSpace(_instanceId).n,

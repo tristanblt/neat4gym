@@ -10,6 +10,10 @@
 
 namespace neat {
     struct Network {
+        /**
+         * @param inputs the number of inputs in the network
+         * @param outputs the number of outputs in the network
+         */
         Network(int inputs, int outputs);
         ~Network() = default;
 
@@ -18,12 +22,16 @@ namespace neat {
 
         /**
          * Creates a copy of the Neurons only.
+         * @return a unique pointer of the new network
          */
         std::unique_ptr<Network> copy() const;
 
         /**
          * Computes the result of the Network given inputs and settings.
          * The settings are used for the sigmoid function.
+         * @param inputs the initial inputs to compute the outputs
+         * @param settings the settings of the algoritm
+         * @return the computed outputs
          */
         [[nodiscard]] std::vector<float> compute(const std::vector<float> &inputs, const Settings &settings) const;
 
