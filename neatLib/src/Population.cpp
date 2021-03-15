@@ -156,6 +156,12 @@ void Population::mutateLink(const Settings &settings, const std::unique_ptr<Netw
     }
 }
 
+void Population::addNode(const std::unique_ptr<Network> &target, const Settings &settings) const
+{
+    // TODO
+    (void)target;
+    (void)settings;
+}
 
 
 void Population::mutateNetworks(const Settings &settings) const
