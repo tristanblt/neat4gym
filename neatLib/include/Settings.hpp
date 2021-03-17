@@ -23,7 +23,7 @@ namespace neat {
         int maxMutations = 10;
         int minMutations = 5;
         float doMutation = 0.9;
-        float maxMutation = 1.0;
+        float maxMutationWeight = 1.0;
 
         static bool doRand(float value) {
             return rand() % ((int)(1.0 / value) * 1000) < 1000;

@@ -19,6 +19,9 @@ Population::Population(int startPopulation, int outputs, int inputs):
             }
         }
     }
+    for (auto &network: _networks) {
+        network->computeLayers();
+    }
 }
 
 void Population::computeBest(const std::vector<float> &inputs, std::vector<float> &outputs, const Settings &settings) const
@@ -121,50 +124,55 @@ void Population::findOrCreateSpecies(Network *network, const Settings &settings)
     }
 }
 
-void Population::addLink(const std::unique_ptr<Network> &target, const Settings &settings) const
+void Population::addLink(const std::unique_ptr<Network> &target, const Settings &settings)
 {
     int n1 = 0, n2 = 0;
 
     target->getTwoNeuronIds(n1, n2);
-    if (target->canAddLink(n1, n2))
+    if (!target->addLink(n1, n2, _innovationId++, (float)(rand() % 200) / 50.0) - 1.0)
         return addNode(target, settings);
-    for (auto &network: _networks) {
-        if (network->mutations > settings.maxMutation || !Settings::doRand(settings.doMutation))
-            continue;
-        if (network->addLink(n1, n2, _innovationId, 1))
-            network->mutations++;
-    }
+    target->mutations++;
+    // for (auto &network: _networks) {
+    //     if (network->mutations > settings.maxMutation || !Settings::doRand(settings.doMutation))
+    //         continue;
+    //     if (network->addLink(n1, n2, _innovationId, 1))
+    //         network->mutations++;
+    // }
 }
 
-void Population::mutateLink(const Settings &settings, const std::unique_ptr<Network> &target) const
+void Population::mutateLink(const Settings &settings, const std::unique_ptr<Network> &target)
 {
     bool set = Settings::doRand(settings.mutationChangeWeight);
     float delta = 0;
     if (set) {
-        delta = (float)(rand() % 1000) / 1000 * settings.maxMutation * 10.0;
+        delta = (float)(rand() % 1000) / 1000 * settings.maxMutationWeight * 10.0;
     } else {
-        delta = (float)(rand() % 1000) / 1000 * settings.maxMutation;
+        delta = (float)(rand() % 1000) / 1000 * settings.maxMutationWeight;
     }
 
     const auto &link = target->getRandomLink();
-    for (auto &network: _networks) {
-        if (network->mutations > settings.maxMutation || !Settings::doRand(settings.doMutation))
-            continue;
-        if (network->mutateWeight(link.neuronFromId, link.neuronToId, delta, set)) {
-            network->mutations++;
-        }
-    }
+    target->mutateWeight(link.neuronFromId, link.neuronToId, delta, set);
+    target->mutations++;
+    // for (auto &network: _networks) {
+    //     if (network->mutations > settings.maxMutation || !Settings::doRand(settings.doMutation))
+    //         continue;
+    //     if (network->mutateWeight(link.neuronFromId, link.neuronToId, delta, set)) {
+    //         network->mutations++;
+    //     }
+    // }
 }
 
-void Population::addNode(const std::unique_ptr<Network> &target, const Settings &settings) const
+void Population::addNode(const std::unique_ptr<Network> &target, [[maybe_unused]] const Settings &settings)
 {
-    // TODO
-    (void)target;
-    (void)settings;
+    auto &link = target->getRandomLink();
+    target->disableLink(link.neuronFromId, link.neuronToId);
+    link.enabled = false;
+    int newNeuron = target->createNode();
+    target->addLink(link.neuronFromId, newNeuron, _innovationId++, link.linkWeight);
+    target->addLink(newNeuron, link.neuronToId, _innovationId++, 1);
 }
 
-
-void Population::mutateNetworks(const Settings &settings) const
+void Population::mutateNetworks(const Settings &settings)
 {
     bool didMutation = false;
     for (auto &network: _networks) {

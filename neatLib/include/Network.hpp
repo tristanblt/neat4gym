@@ -99,6 +99,11 @@ namespace neat {
          */
         const Genome &getRandomLink() const;
 
+        /**
+         * Returns a random link between two neurons. Will divide by 0 if there are no innovations.
+         */
+        Genome &getRandomLink();
+
         float fitness = 0;
         bool dead = false;
         int mutations = 0;

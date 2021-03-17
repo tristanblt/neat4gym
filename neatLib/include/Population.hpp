@@ -52,33 +52,33 @@ namespace neat {
          */
         void findOrCreateSpecies(Network *network, const Settings &settings);
 
-        private:
-            /**
-             * Mutate all networks of the population
-             */
-            void mutateNetworks(const Settings &settings) const;
+    private:
+        /**
+         * Mutate all networks of the population
+         */
+        void mutateNetworks(const Settings &settings);
 
-            /**
-             * Mutate networks by adding a new link
-             */
-            void addLink(const std::unique_ptr<Network> &target, const Settings &settings) const;
+        /**
+         * Mutate networks by adding a new link
+         */
+        void addLink(const std::unique_ptr<Network> &target, const Settings &settings);
 
-            /**
-             * Mutate networks by modify link's weight
-             */
-            void mutateLink(const Settings &settings, const std::unique_ptr<Network> &target) const;
+        /**
+         * Mutate networks by modify link's weight
+         */
+        void mutateLink(const Settings &settings, const std::unique_ptr<Network> &target);
 
-            /**
-             * Mutate networks by adding a new node
-             */
-            void addNode(const std::unique_ptr<Network> &target, const Settings &settings) const;
+        /**
+         * Mutate networks by adding a new node
+         */
+        void addNode(const std::unique_ptr<Network> &target, const Settings &settings);
 
-            std::vector<std::unique_ptr<Network>> _networks;
-            std::vector<Species> _species;
+        std::vector<std::unique_ptr<Network>> _networks;
+        std::vector<Species> _species;
 
-            size_t _size;
+        size_t _size;
 
-            int _innovationId = 0;
+        int _innovationId = 0;
     };
 }
 

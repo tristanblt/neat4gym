@@ -10,8 +10,10 @@ Network::Network(int inputs, int outputs)
     _inputs.reserve(inputs);
     _outputs.reserve(outputs);
 
-    for (int i = 0; i < inputs; i++)
+    for (int i = 0; i < inputs; i++) {
         _inputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
+        _inputs.back()->layer = 0;
+    }
     for (int i = 0; i < outputs; i++)
         _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
 }
@@ -220,8 +222,10 @@ void Network::rebuildNetwork()
     _outputs.clear();
     _nextNeuronId = 1;
 
-    for (size_t i = 0; i < inputsSize; i++)
+    for (size_t i = 0; i < inputsSize; i++) {
         _inputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
+        _inputs.back()->layer = 0;
+    }
     for (size_t i = 0; i < outputsSize; i++)
         _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
 
@@ -234,6 +238,7 @@ void Network::rebuildNetwork()
             continue;
         addLink(genome.neuronFromId, genome.neuronToId, -1, genome.linkWeight);
     }
+    computeLayers();
 }
 
 int Network::getNextNeuronId()
@@ -277,6 +282,11 @@ void Network::disableLink(int from, int to) const
 }
 
 const Genome &Network::getRandomLink() const
+{
+    return _innovations[rand() % _innovations.size()];
+}
+
+Genome &Network::getRandomLink()
 {
     return _innovations[rand() % _innovations.size()];
 }

@@ -30,7 +30,7 @@ namespace neat {
         /**
          * The layer of the neuron in the graph
          */
-        int layer = 0;
+        int layer = -1;
 
         /**
          * Compute the layer of the neuron
