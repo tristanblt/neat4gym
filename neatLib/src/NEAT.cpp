@@ -20,6 +20,11 @@ const NEAT::Data &NEAT::step(bool isOver, float fitness, const std::vector<float
         }
     }
     _pop.compute(_data.currentIndividual, inputs, _data.outputs, settings);
+    std::cout << "enter" << std::endl;
+    std::cout << _data.outputs.size() << std::endl;
+    for (auto &e : _data.outputs)
+        std::cout << e << std::endl;
+    std::cout << "end" << std::endl;
     return _data;
 }
 
