@@ -76,7 +76,7 @@ namespace neat {
             std::vector<std::unique_ptr<Network>> _networks;
             std::vector<Species> _species;
 
-            size_t _startPopSize;
+            size_t _size;
 
             int _innovationId = 0;
     };

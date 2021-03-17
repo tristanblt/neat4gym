@@ -4,7 +4,7 @@
 using namespace neat;
 
 Population::Population(int startPopulation, int outputs, int inputs):
-    _startPopSize(startPopulation)
+    _size(startPopulation)
 {
     auto newSpecies = _species.emplace_back(this);
     for (int i = 0; i < startPopulation; i++) {
@@ -79,8 +79,8 @@ void Population::genOffsprings(const Settings &settings)
 {
     int currentSpecie = 0;
     std::vector<std::unique_ptr<Network>> offsprings;
-    offsprings.reserve(_startPopSize);
-    while (offsprings.size() < _startPopSize) {
+    offsprings.reserve(_size);
+    while (offsprings.size() < _size) {
         if (Settings::doRand(settings.interspeciesCrossoverRate)) {
             offsprings.emplace_back(Network::crossover(
                                         *_networks[rand() % _networks.size()],
