@@ -2,6 +2,7 @@
 #include "Link.hpp"
 #include "Settings.hpp"
 #include <algorithm>
+#include <iostream>
 
 using namespace neat;
 
@@ -76,7 +77,7 @@ std::unique_ptr<Network> Network::crossover(const Network &a, const Network &b)
 
 float Network::computeSimilarity(const Network &a, const Network &b, const Settings &settings)
 {
-    size_t n = a._innovations.size() > b._innovations.size() ?
+    size_t n = (a._innovations.size() > b._innovations.size()) ?
         a._innovations.size() : b._innovations.size();
     const auto &listBig = a._innovations.back().innovationId > b._innovations.back().innovationId ?
         a._innovations : b._innovations;

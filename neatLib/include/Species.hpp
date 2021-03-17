@@ -60,6 +60,11 @@ namespace neat {
          */
         void endReproduction();
 
+        /**
+         * Set the representative network of the species
+         */
+        void setRepresentativeNetwork(Network *network);
+
         private:
             /**
              * Exclude a network of the species because he is to different

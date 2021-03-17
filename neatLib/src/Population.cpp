@@ -1,16 +1,18 @@
 #include "Population.hpp"
 #include <algorithm>
+#include <iostream>
 
 using namespace neat;
 
 Population::Population(int startPopulation, int outputs, int inputs):
     _size(startPopulation)
 {
-    auto newSpecies = _species.emplace_back(this);
+    _species.emplace_back(this);
     for (int i = 0; i < startPopulation; i++) {
         _networks.push_back(std::make_unique<Network>(inputs, outputs));
-        newSpecies.addNetworkToSpecies(_networks[_networks.size() - 1].get());
+        _species[0].addNetworkToSpecies(_networks[_networks.size() - 1].get());
     }
+    _species[0].setRepresentativeNetwork(_networks[0].get());
     for (int i = 0; i < inputs; i++) {
         for (int j = 0; j < outputs; j++) {
             int innovationId = _innovationId++;
@@ -57,8 +59,8 @@ size_t Population::size() const
 
 void Population::computeSpecies(const Settings &settings)
 {
-    for (auto &spec : _species) {
-        spec.computeSpecies(settings);
+    for (size_t i = 0; i < _species.size(); i++) {
+        _species[i].computeSpecies(settings);
     }
 }
 
@@ -94,7 +96,8 @@ void Population::genOffsprings(const Settings &settings)
         }
 
         offsprings.emplace_back(_species[currentSpecie].getOffspring(settings));
-        while (_species[currentSpecie].maxPop >= _species[currentSpecie].currentInNewGen) {
+        currentSpecie = (currentSpecie + 1) % _species.size();
+        while (_species[currentSpecie].maxPop < _species[currentSpecie].currentInNewGen) {
             currentSpecie = (currentSpecie + 1) % _species.size();
         }
     }
@@ -120,7 +123,10 @@ void Population::findOrCreateSpecies(Network *network, const Settings &settings)
     if (bestSimilarity >= settings.similarity && mostCompatibleSpecies) {
         mostCompatibleSpecies->addNetworkToSpecies(network);
     } else if (bestSimilarity < settings.similarity) {
-        _species.emplace_back(this).addNetworkToSpecies(network);
+        _species.emplace_back(this);
+        _species.back().addNetworkToSpecies(network);
+        _species.back().setRepresentativeNetwork(network);
+
     }
 }
 

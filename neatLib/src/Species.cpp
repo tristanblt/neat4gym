@@ -1,6 +1,7 @@
 #include "Species.hpp"
 #include "Population.hpp"
 #include <algorithm>
+#include <iostream>
 
 using namespace neat;
 
@@ -32,7 +33,8 @@ void Species::computeSpecies(const Settings &settings)
             settings
         );
 
-        if (similarity < settings.similarity) {
+
+        if (similarity > settings.similarity) {
             excludeNetwork(network, settings);
         }
     }
@@ -47,7 +49,9 @@ void Species::excludeNetwork(Network *networkToExclude, const Settings &settings
     );
 
     _population->findOrCreateSpecies(networkToExclude, settings);
-    _networks.erase(toExclude);
+
+    if (toExclude != _networks.end())
+        _networks.erase(toExclude);
 }
 
 float Species::computeSpeciesSimilarity(Network *network, const Settings &settings)
@@ -105,4 +109,12 @@ void Species::endReproduction()
 {
     _networks = _newPop;
     _newPop.clear();
+    _representativeNetwork = _networks[0];
+    maxPop = 0;
+    currentInNewGen = 0;
+}
+
+void Species::setRepresentativeNetwork(Network *network)
+{
+    _representativeNetwork = network;
 }
