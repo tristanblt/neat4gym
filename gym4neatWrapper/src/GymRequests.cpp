@@ -114,8 +114,8 @@ GymRequests::StepData GymRequests::step(const std::string &instanceId, const std
     }
 
 
-    packet["render"] = true;
-    std::cout << packet << std::endl;
+    packet["render"] = false;
+    // std::cout << packet << std::endl;
     _client->Post(
         _endpoint + "/envs/" + instanceId + "/step",
         _headers,
@@ -123,7 +123,7 @@ GymRequests::StepData GymRequests::step(const std::string &instanceId, const std
         httpResponse
     );
 
-    std::cout << httpResponse.strBody << std::endl;
+    // std::cout << httpResponse.strBody << std::endl;
 
     json response = json::parse(httpResponse.strBody);
 
