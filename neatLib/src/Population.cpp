@@ -108,21 +108,21 @@ void Population::genOffsprings(const Settings &settings)
 
 void Population::findOrCreateSpecies(Network *network, const Settings &settings)
 {
-    float bestSimilarity = 0;
+    float bestSimilarity = std::numeric_limits<float>::max();
     Species *mostCompatibleSpecies = nullptr;
 
     for (auto &spec : _species) {
         float similarity = spec.computeSpeciesSimilarity(network, settings);
 
-        if (similarity > bestSimilarity) {
+        if (similarity < bestSimilarity) {
             bestSimilarity = similarity;
             mostCompatibleSpecies = &spec;
         }
     }
 
-    if (bestSimilarity >= settings.similarity && mostCompatibleSpecies) {
+    if (bestSimilarity < settings.similarity && mostCompatibleSpecies) {
         mostCompatibleSpecies->addNetworkToSpecies(network);
-    } else if (bestSimilarity < settings.similarity) {
+    } else if (bestSimilarity >= settings.similarity) {
         _species.emplace_back(this);
         _species.back().addNetworkToSpecies(network);
         _species.back().setRepresentativeNetwork(network);

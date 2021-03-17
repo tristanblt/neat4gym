@@ -44,11 +44,15 @@ void Agent::run(int population)
             }
         }
         float average = 0;
-        for (auto &a : fitnesses)
+        float best = 0;
+        for (auto &a : fitnesses) {
             average += a;
+            if (a > best)
+                best = a;
+        }
         average /= fitnesses.size();
         fitnesses.clear();
-        std::cout << "Generation: " << data.currentGeneration << " -> average: " << average << std::endl;
+        std::cout << "Generation: " << data.currentGeneration << " -> average: " << average << ", best: " << best << std::endl;
     }
     _gr.closeMonitor(_instanceId);
 }
