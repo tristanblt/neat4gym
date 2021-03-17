@@ -31,10 +31,13 @@ class GymRequests {
         StepData step(const std::string &instanceId, const std::vector<float> &action);
         std::vector<float> reset(const std::string &instanceId);
 
+        void setEndpoint(const std::string &endpoint);
+
     protected:
     private:
         CHTTPClient::HeadersMap _headers;
         CHTTPClient *_client;
+        std::string _endpoint;
 };
 
 #endif /* !GYMREQUESTS_HPP_ */

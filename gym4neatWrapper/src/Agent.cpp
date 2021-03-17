@@ -1,7 +1,8 @@
 #include "Agent.hpp"
 
-Agent::Agent(const std::string &env)
+Agent::Agent(const std::string &env, const std::string &endpoint)
 {
+    _gr.setEndpoint(endpoint);
     _instanceId = _gr.createInstance(env);
 }
 
@@ -9,7 +10,7 @@ Agent::~Agent()
 {
 }
 
-void Agent::run()
+void Agent::run(int population)
 {
     std::vector<float> inputs;
     neat::NEAT::Data data;
@@ -19,12 +20,12 @@ void Agent::run()
     _gr.startMonitor(_instanceId);
 
     neat::NEAT neat(
-        5,
+        population,
         _gr.observationSpace(_instanceId).n,
         _gr.actionSpace(_instanceId).n);
 
     while(true) {
-        for (int episode = 0; episode < 5; episode++) {
+        for (int episode = 0; episode < population; episode++) {
             inputs = _gr.reset(_instanceId);
             while (true) {
                 data = neat.step(step.isOver, fitness, inputs);

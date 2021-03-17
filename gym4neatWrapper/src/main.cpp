@@ -2,7 +2,17 @@
 
 int main(int argc, char const *argv[])
 {
-    Agent cartPole("CartPole-v0");
+    if (argc != 4) {
+        std::cout << argv[0] << " <population> <endpoint> <env name>" << std::endl;
+        return 1;
+    }
 
-    cartPole.run();
+    Agent cartPole(argv[3], argv[2]);
+    int population;
+
+    population = atoi(argv[1]);
+    if (population) {
+        cartPole.run(population);
+    }
+    return 0;
 }

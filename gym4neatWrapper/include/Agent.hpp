@@ -8,10 +8,10 @@
 
 class Agent {
     public:
-        Agent(const std::string &env);
+        Agent(const std::string &env, const std::string &endpoint);
         ~Agent();
 
-        void run();
+        void run(int population);
 
     protected:
     private:

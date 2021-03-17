@@ -20,9 +20,8 @@ std::string GymRequests::createInstance(const std::string &env)
     json packet;
 
     packet["env_id"] = env;
-
     _client->Post(
-        "http://127.0.0.1:12345/v1/envs",
+        _endpoint + "/envs",
         _headers,
         packet.dump(),
         httpResponse
@@ -38,7 +37,7 @@ void GymRequests::startMonitor(const std::string &instanceId)
     json packet;
 
     _client->Post(
-        "http://127.0.0.1:12345/v1/envs/" + instanceId + "/monitor/start",
+        _endpoint + "/envs/" + instanceId + "/monitor/start",
         _headers,
         packet.dump(),
         httpResponse
@@ -51,7 +50,7 @@ void GymRequests::closeMonitor(const std::string &instanceId)
     json packet;
 
     _client->Post(
-        "http://127.0.0.1:12345/v1/envs/" + instanceId + "/monitor/close",
+        _endpoint + "/envs/" + instanceId + "/monitor/close",
         _headers,
         packet.dump(),
         httpResponse
@@ -64,7 +63,7 @@ GymRequests::Space GymRequests::actionSpace(const std::string &instanceId)
     Space space;
 
     _client->Get(
-        "http://127.0.0.1:12345/v1/envs/" + instanceId + "/action_space",
+        _endpoint + "/envs/" + instanceId + "/action_space",
         _headers,
         httpResponse
     );
@@ -85,7 +84,7 @@ GymRequests::Space GymRequests::observationSpace(const std::string &instanceId)
     Space space;
 
     _client->Get(
-        "http://127.0.0.1:12345/v1/envs/" + instanceId + "/observation_space",
+        _endpoint + "/envs/" + instanceId + "/observation_space",
         _headers,
         httpResponse
     );
@@ -116,7 +115,7 @@ GymRequests::StepData GymRequests::step(const std::string &instanceId, const std
 
     packet["render"] = true;
     _client->Post(
-        "http://127.0.0.1:12345/v1/envs/" + instanceId + "/step",
+        _endpoint + "/envs/" + instanceId + "/step",
         _headers,
         packet.dump(),
         httpResponse
@@ -137,7 +136,7 @@ std::vector<float> GymRequests::reset(const std::string &instanceId)
     json packet;
 
     _client->Post(
-        "http://127.0.0.1:12345/v1/envs/" + instanceId + "/reset",
+        _endpoint + "/envs/" + instanceId + "/reset",
         _headers,
         packet.dump(),
         httpResponse
@@ -145,4 +144,9 @@ std::vector<float> GymRequests::reset(const std::string &instanceId)
 
     json response = json::parse(httpResponse.strBody);
     return response["observation"];
+}
+
+void GymRequests::setEndpoint(const std::string &endpoint)
+{
+    _endpoint = endpoint;
 }
