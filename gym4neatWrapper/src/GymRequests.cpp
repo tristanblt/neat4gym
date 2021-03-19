@@ -102,7 +102,7 @@ GymRequests::Space GymRequests::observationSpace(const std::string &instanceId)
 
 GymRequests::StepData GymRequests::step(const std::string &instanceId, const std::vector<float> &action)
 {
-    std::cout << "a" << std::endl;
+    // std::cout << "a" << std::endl;
     CHTTPClient::HttpResponse httpResponse;
     json packet;
     StepData data;
@@ -119,8 +119,8 @@ GymRequests::StepData GymRequests::step(const std::string &instanceId, const std
         packet["action"] = action;
     }
 
-    packet["render"] = false;
-    std::cout << packet << std::endl;
+    packet["render"] = true;
+    // std::cout << packet << std::endl;
     _client->Post(
         _endpoint + "/envs/" + instanceId + "/step",
         _headers,
@@ -128,21 +128,21 @@ GymRequests::StepData GymRequests::step(const std::string &instanceId, const std
         httpResponse
     );
 
-    std::cout << httpResponse.strBody << std::endl;
+    // std::cout << httpResponse.strBody << std::endl;
 
     json response = json::parse(httpResponse.strBody);
-    std::cout << "-" << std::endl;
+    // std::cout << "-" << std::endl;
     for (size_t i = 0; i < response["observation"].size(); i++)
         data.inputs.push_back(response["observation"][i]);
     data.isOver = response["done"];
     data.score = response["reward"];
-    std::cout << "b" << std::endl;
+    // std::cout << "b" << std::endl;
     return data;
 }
 
 std::vector<float> GymRequests::reset(const std::string &instanceId)
 {
-    std::cout << "c" << std::endl;
+    // std::cout << "c" << std::endl;
     CHTTPClient::HttpResponse httpResponse;
     json packet;
 
@@ -154,7 +154,7 @@ std::vector<float> GymRequests::reset(const std::string &instanceId)
     );
 
     json response = json::parse(httpResponse.strBody);
-    std::cout << "d" << std::endl;
+    // std::cout << "d" << std::endl;
     return response["observation"];
 }
 

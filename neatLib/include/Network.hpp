@@ -74,6 +74,11 @@ namespace neat {
         int createNode();
 
         /**
+         * Creates a new node with a provided ID and returns it's ID.
+         */
+        int createNode(int id);
+
+        /**
          * Disables a link if the link exists.
          */
         void disableLink(int from, int to) const;
@@ -126,7 +131,7 @@ namespace neat {
 
         std::vector<Genome> _innovations;
 
-        int _nextNeuronId = 1;
+        int _nextNeuronId = 0;
     };
 }
 

@@ -38,6 +38,9 @@ std::vector<float> Network::compute(const std::vector<float> &inputs, const Sett
     unsigned turn = _outputs.front()->_turn + 1;
     for (auto &output: _outputs) {
         values.push_back(output->computeValue(turn, settings));
+        if (values.back() > 1.0 || values.back() < 0.0) {
+            throw "connard 2";
+        }
     }
     return values;
 }
@@ -70,8 +73,6 @@ std::unique_ptr<Network> Network::crossover(const Network &a, const Network &b)
             child->_innovations.push_back(*other);
         }
     }
-
-
     child->rebuildNetwork();
     return child;
 }
@@ -124,11 +125,11 @@ float Network::computeSimilarity(const Network &a, const Network &b, const Setti
 
 bool Network::mutateWeight(int from, int to, float delta, bool set)
 {
-    Neuron *n1 = getNeuron(from);
+    Neuron *n2 = getNeuron(to);
 
-    if (!n1)
+    if (!n2)
         return false;
-    auto *link = n1->getLinkTo(to);
+    auto *link = n2->getLinkFrom(from);
     if (!link)
         return false;
     if (set)
@@ -145,6 +146,8 @@ bool Network::mutateWeight(int from, int to, float delta, bool set)
 
 bool Network::hasLink(int from, int to) const
 {
+    if (from == to)
+        return false;
     Neuron *n1 = getNeuron(from), *n2 = nullptr;
 
     if (!n1)
@@ -157,11 +160,13 @@ bool Network::hasLink(int from, int to) const
 
 bool Network::addLink(int from, int to, int innovationId, float weight)
 {
+    if (from == to)
+        return false;
     Neuron *n1 = getNeuron(from), *n2 = getNeuron(to);
 
-    if (!n1 || !n2 || n1->layer < n2->layer || (n1->layer == 0 && n2->layer == 0) || hasLink(from, to))
+    if (!n1 || !n2 || (n1->layer < n2->layer && n1->layer != -1 && n2->layer != -1) || (n1->layer == 0 && n2->layer == 0) || hasLink(from, to))
         return false;
-    Neuron::link(n1, n2);
+    Neuron::link(n1, n2, weight);
     if (innovationId != -1)
         _innovations.emplace_back(innovationId, from, to, weight);
     return true;
@@ -172,6 +177,15 @@ int Network::createNode()
     int neuronId = getNextNeuronId();
     _hiddens.emplace_back(std::make_unique<Neuron>(neuronId));
     return neuronId;
+}
+
+int Network::createNode(int id)
+{
+    _hiddens.emplace_back(std::make_unique<Neuron>(id));
+    if (_nextNeuronId <= id) {
+        _nextNeuronId = id + 1;
+    }
+    return id;
 }
 
 bool Network::canAddLink(int from, int to) const
@@ -222,7 +236,7 @@ void Network::rebuildNetwork()
     _inputs.clear();
     _hiddens.clear();
     _outputs.clear();
-    _nextNeuronId = 1;
+    _nextNeuronId = 0;
 
     for (size_t i = 0; i < inputsSize; i++) {
         _inputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
@@ -232,13 +246,14 @@ void Network::rebuildNetwork()
         _outputs.push_back(std::make_unique<Neuron>(getNextNeuronId()));
 
     for (auto &genome : _innovations) {
-        if (getNeuron(genome.neuronFromId) == nullptr)
-            createNode();
-        if (getNeuron(genome.neuronToId) == nullptr)
-            createNode();
         if (!genome.enabled)
             continue;
-        addLink(genome.neuronFromId, genome.neuronToId, -1, genome.linkWeight);
+        if (getNeuron(genome.neuronFromId) == nullptr)
+            createNode(genome.neuronFromId);
+        if (getNeuron(genome.neuronToId) == nullptr)
+            createNode(genome.neuronToId);
+        if (!addLink(genome.neuronFromId, genome.neuronToId, -1, genome.linkWeight))
+            throw "connard3";
     }
     computeLayers();
 }

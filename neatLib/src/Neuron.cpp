@@ -9,10 +9,12 @@ Neuron::Neuron(int _id):
     id(_id)
 {}
 
-void Neuron::link(Neuron *from, Neuron *to)
+void Neuron::link(Neuron *from, Neuron *to, float w)
 {
     from->_to.emplace_back(from, to);
     to->_from.emplace_back(from, to);
+    from->_to.back().weight = w;
+    to->_from.back().weight = w;
 }
 
 void Neuron::unlink(Neuron *from, Neuron *to)
@@ -29,10 +31,14 @@ void Neuron::computeLayersRec(size_t i)
 {
     if (i >= _to.size())
         return;
-    if (_to[i].to->layer < layer + 1)
+    bool changed = false;
+    if (_to[i].to->layer < layer + 1) {
+        changed = true;
         _to[i].to->layer = layer + 1;
+    }
     computeLayersRec(i + 1);
-    _to[i].to->computeLayersRec();
+    if (changed)
+        _to[i].to->computeLayersRec();
 }
 
 static float sigmoid(float x, const Settings &settings)
@@ -44,18 +50,24 @@ static float sigmoid(float x, const Settings &settings)
 
 float Neuron::computeValue(unsigned turn, const Settings &settings)
 {
-    if (_turn == turn)
+    if (_turn == turn || _from.size() == 0) {
+        // if (_from.size()) {
+            // std::cout << _value << std::endl;
+        // }
         return _value;
+    }
+    _value = 0;
     for (auto &from: _from) {
         _value += from.from->computeValue(turn, settings) * from.weight;
     }
     _value = sigmoid(_value, settings);
     _turn = turn;
-    if (std::isnan(_value)) {
+    if (std::isnan(_value) || _value < 0.0 || _value > 1.0 || (int)_value < 0 || (int)_value > 1) {
         std::cout << _value << std::endl;
         throw "connard";
         // exit('T');
     }
+    // std::cout << _value << std::endl;
     return _value;
 }
 
@@ -72,6 +84,15 @@ Link *Neuron::getLinkTo(int id)
 {
     for (auto &link: _to) {
         if (link.to->id == id)
+            return &link;
+    }
+    return nullptr;
+}
+
+Link *Neuron::getLinkFrom(int id)
+{
+    for (auto &link: _from) {
+        if (link.from->id == id)
             return &link;
     }
     return nullptr;

@@ -15,7 +15,7 @@ namespace neat {
         /**
          * Link two given neurons in the graph representation
          */
-        static void link(Neuron *from, Neuron *to);
+        static void link(Neuron *from, Neuron *to, float weight);
 
         /**
          * Unlink two given neurons in the graph representation
@@ -51,6 +51,11 @@ namespace neat {
          * @return the "to" link
          */
         Link *getLinkTo(int id);
+
+        /**
+         * @return the "from" link
+         */
+        Link *getLinkFrom(int id);
 
         /**
          * Set the new value

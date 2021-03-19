@@ -17,7 +17,7 @@ Population::Population(int startPopulation, int outputs, int inputs):
         for (int j = 0; j < outputs; j++) {
             int innovationId = _innovationId++;
             for (auto &network: _networks) {
-                network->addLink(i, j + inputs, innovationId, 1);
+                network->addLink(i, j + inputs, innovationId, 0);
             }
         }
     }
@@ -82,6 +82,7 @@ void Population::purge(const Settings &settings)
 
 void Population::genOffsprings(const Settings &settings)
 {
+    mutateNetworks(settings);
     int currentSpecie = 0;
     std::vector<std::unique_ptr<Network>> offsprings;
     offsprings.reserve(_size);
@@ -151,9 +152,9 @@ void Population::mutateLink(const Settings &settings, const std::unique_ptr<Netw
     bool set = Settings::doRand(settings.mutationChangeWeight);
     float delta = 0;
     if (set) {
-        delta = (float)(rand() % 1000) / 1000 * settings.maxMutationWeight * 10.0;
+        delta = ((float)(rand() % 2000) / 1000 * settings.maxMutationWeight - settings.maxMutationWeight) * 10.0;
     } else {
-        delta = (float)(rand() % 1000) / 1000 * settings.maxMutationWeight;
+        delta = (float)(rand() % 2000) / 1000 * settings.maxMutationWeight - settings.maxMutationWeight;
     }
 
     const auto &link = target->getRandomLink();
