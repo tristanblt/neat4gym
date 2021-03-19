@@ -35,8 +35,9 @@ std::vector<float> Network::compute(const std::vector<float> &inputs, const Sett
         _inputs[i]->setValue(inputs[i]);
     }
     values.reserve(_outputs.size());
+    unsigned turn = _outputs.front()->_turn + 1;
     for (auto &output: _outputs) {
-        values.push_back(output->computeValue(settings));
+        values.push_back(output->computeValue(turn, settings));
     }
     return values;
 }

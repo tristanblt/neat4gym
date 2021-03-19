@@ -40,7 +40,7 @@ namespace neat {
         /**
          * Compute the neuron value
          */
-        float computeValue(const Settings &settings);
+        float computeValue(unsigned turn, const Settings &settings);
 
         /**
          * @return the linked "to" neuron
@@ -57,10 +57,12 @@ namespace neat {
          */
         void setValue(float v);
 
-        private:
-            std::vector<Link> _from;
-            std::vector<Link> _to;
-            float _value;
+        unsigned _turn = 0;
+
+    private:
+        std::vector<Link> _from;
+        std::vector<Link> _to;
+        float _value;
     };
 
 }

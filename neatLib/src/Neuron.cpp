@@ -40,12 +40,23 @@ static float sigmoid(float x, const Settings &settings)
     return 1.0 / (1.0 + exp(-x * settings.sigmoidMult));
 }
 
-float Neuron::computeValue(const Settings &settings)
+#include <iostream>
+
+float Neuron::computeValue(unsigned turn, const Settings &settings)
 {
+    if (_turn == turn)
+        return _value;
     for (auto &from: _from) {
-        _value += from.from->computeValue(settings) * from.weight;
+        _value += from.from->computeValue(turn, settings) * from.weight;
     }
-    return sigmoid(_value, settings);
+    _value = sigmoid(_value, settings);
+    _turn = turn;
+    if (std::isnan(_value)) {
+        std::cout << _value << std::endl;
+        throw "connard";
+        // exit('T');
+    }
+    return _value;
 }
 
 Neuron *Neuron::getNeuronTo(int id) const
