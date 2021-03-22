@@ -27,15 +27,26 @@ void Neuron::unlink(Neuron *from, Neuron *to)
     }));
 }
 
-void Neuron::computeLayersRec(size_t i)
+// void Neuron::computeLayersRec(size_t i)
+// {
+//     if (i >= _to.size())
+//         return;
+//     if (_to[i].to->layer < layer + 1) {
+//         _to[i].to->layer = layer + 1;
+//         _to[i].to->computeLayersRec();
+//     }
+//     computeLayersRec(i + 1);
+// }
+
+bool Neuron::hasLoop(Neuron *n) const
 {
-    if (i >= _to.size())
-        return;
-    if (_to[i].to->layer < layer + 1) {
-        _to[i].to->layer = layer + 1;
-        _to[i].to->computeLayersRec();
+    for (auto &link: _to) {
+        if (link.to->id == n->id)
+            return true;
+        else if (link.to->hasLoop(n))
+            return true;
     }
-    computeLayersRec(i + 1);
+    return false;
 }
 
 static float sigmoid(float x, const Settings &settings)

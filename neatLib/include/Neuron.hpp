@@ -30,12 +30,12 @@ namespace neat {
         /**
          * The layer of the neuron in the graph
          */
-        int layer = -1;
+        // int layer = -1;
 
         /**
          * Compute the layer of the neuron
          */
-        void computeLayersRec(size_t i = 0);
+        // void computeLayersRec(size_t i = 0);
 
         /**
          * Compute the neuron value
@@ -63,6 +63,8 @@ namespace neat {
         void setValue(float v);
 
         unsigned _turn = 0;
+
+        bool hasLoop(Neuron *n) const;
 
     private:
         std::vector<Link> _from;

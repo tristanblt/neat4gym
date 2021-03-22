@@ -66,7 +66,7 @@ namespace neat {
          * Should only be used when there is no intent to add a link.
          * It is otherwise more efficient to call addLink directly.
          */
-        [[nodiscard]] bool canAddLink(int from, int to) const;
+        // [[nodiscard]] bool canAddLink(int from, int to) const;
 
         /**
          * Creates a new node with a provided ID and returns it's ID.

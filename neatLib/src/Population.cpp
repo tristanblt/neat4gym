@@ -134,10 +134,12 @@ void Population::findOrCreateSpecies(Network *network, const Settings &settings)
 void Population::addLink(const std::unique_ptr<Network> &target, const Settings &settings)
 {
     int n1 = 0, n2 = 0;
+    float weight = (float)(rand() % 200) / 50.0 - 1.0;
+
 
     target->getTwoNeuronIds(n1, n2);
-    if (!target->addLink(n1, n2, _innovationId++, (float)(rand() % 200) / 50.0) - 1.0)
-        return addNode(target, settings);
+    if (!target->addLink(n1, n2, _innovationId++, weight))
+        return;
     target->mutations++;
     // for (auto &network: _networks) {
     //     if (network->mutations > settings.maxMutation || !Settings::doRand(settings.doMutation))

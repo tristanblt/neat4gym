@@ -14,7 +14,7 @@ Network::Network(int inputs, int outputs)
     int neuronId = 0;
     for (int i = 0; i < inputs; i++) {
         _inputs.push_back(std::make_unique<Neuron>(neuronId++));
-        _inputs.back()->layer = 0;
+        // _inputs.back()->layer = 0;
     }
     for (int i = 0; i < outputs; i++)
         _outputs.push_back(std::make_unique<Neuron>(neuronId++));
@@ -160,14 +160,22 @@ bool Network::hasLink(int from, int to) const
 
 bool Network::addLink(int from, int to, int innovationId, float weight)
 {
-    if (!canAddLink(from, to))
-        return false;
+    // if (!canAddLink(from, to))
+    //     return false;
 
+    if (from == to)
+        return false;
     Neuron *n1 = getNeuron(from), *n2 = getNeuron(to);
+    if (n1 == nullptr || n2 == nullptr)
+        return false;
     Neuron::link(n1, n2, weight);
+    if (n1->hasLoop(n1)) {
+        Neuron::unlink(n1, n2);
+        return false;
+    }
     if (innovationId != -1)
         _innovations.emplace_back(innovationId, from, to, weight);
-    n1->computeLayersRec();
+    // n1->computeLayersRec();
     return true;
 }
 
@@ -177,58 +185,59 @@ int Network::createNode(int id)
     return id;
 }
 
-bool Network::canAddLink(int from, int to) const
-{
-    if (from == to)
-        return false;
-    int layer1 = -2, layer2 = -2;
+// bool Network::canAddLink(int from, int to) const
+// {
+    // if (from == to)
+    //     return false;
+    // int layer1 = -2, layer2 = -2;
 
-    for (auto &ptr: _inputs) {
-        if (ptr->id == from) {
-            if (layer2 != -2)
-                return false; // cannot link input links together
-            layer1 = ptr->layer;
-        } else if (ptr->id == to) {
-            if (layer1 != -2)
-                return false; // cannot link input links together
-            layer2 = ptr->layer;
-        }
-    }
-    for (auto &ptr: _hiddens) {
-        if (ptr->id == from) {
-            layer1 = ptr->layer;
-            if (layer1 == -1)
-                return true;
-            if (layer2 != -2)
-                return layer1 <= layer2 && !hasLink(from, to);
-        } else if (ptr->id == to) {
-            layer2 = ptr->layer;
-            if (layer2 == -1)
-                return true;
-            if (layer1 != -2)
-                return layer1 <= layer2 && !hasLink(from, to);
-        }
-    }
-    // both are outputs
-    if (layer1 == -2 && layer2 == -2)
-        return false;
-    for (auto &ptr: _outputs) {
-        if (ptr->id == from) {
-            layer1 = ptr->layer;
-            if (layer1 == -1)
-                return true;
-            if (layer2 != -2)
-                return layer1 <= layer2 && !hasLink(from, to);
-        } else if (ptr->id == to) {
-            layer2 = ptr->layer;
-            if (layer2 == -1)
-                return true;
-            if (layer1 != -2)
-                return layer1 <= layer2 && !hasLink(from, to);
-        }
-    }
-    return false;
-}
+    // for (auto &ptr: _inputs) {
+    //     if (ptr->id == from) {
+    //         if (layer2 != -2)
+    //             return false; // cannot link input links together
+    //         // layer1 = ptr->layer;
+    //     } else if (ptr->id == to) {
+    //         if (layer1 != -2)
+    //             return false; // cannot link input links together
+    //         // layer2 = ptr->layer;
+    //     }
+    // }
+    // for (auto &ptr: _hiddens) {
+    //     if (ptr->id == from) {
+    //         layer1 = ptr->layer;
+    //         if (layer1 == -1)
+    //             return true;
+    //         if (layer2 != -2)
+    //             return layer1 <= layer2 && !hasLink(from, to);
+    //     } else if (ptr->id == to) {
+    //         layer2 = ptr->layer;
+    //         if (layer2 == -1)
+    //             return true;
+    //         if (layer1 != -2)
+    //             return layer1 <= layer2 && !hasLink(from, to);
+    //     }
+    // }
+    // // both are outputs
+    // if (layer1 == -2 && layer2 == -2)
+    //     return false;
+    // for (auto &ptr: _outputs) {
+    //     if (ptr->id == from) {
+    //         layer1 = ptr->layer;
+    //         if (layer1 == -1)
+    //             return true;
+    //         if (layer2 != -2)
+    //             return layer1 <= layer2 && !hasLink(from, to);
+    //     } else if (ptr->id == to) {
+    //         layer2 = ptr->layer;
+    //         if (layer2 == -1)
+    //             return true;
+    //         if (layer1 != -2)
+    //             return layer1 <= layer2 && !hasLink(from, to);
+    //     }
+    // }
+    // return false;
+//     return false;
+// }
 
 void Network::rebuildNetwork()
 {
@@ -242,7 +251,6 @@ void Network::rebuildNetwork()
 
     for (size_t i = 0; i < inputsSize; i++) {
         _inputs.push_back(std::make_unique<Neuron>(nextNeuronId++));
-        _inputs.back()->layer = 0;
     }
     for (size_t i = 0; i < outputsSize; i++)
         _outputs.push_back(std::make_unique<Neuron>(nextNeuronId++));
@@ -298,15 +306,12 @@ Genome &Network::getRandomLink()
 
 void Network::getTwoNeuronIds(int &n1, int &n2) const
 {
-    int layer1 = 0;
     // Chose randomly between inputs and hiddens (given their size)
     if (Settings::doRand((float)(_inputs.size()) / (float)(_inputs.size() + _hiddens.size()))) {
         auto &neur = _inputs[rand() % _inputs.size()];
-        layer1 = neur->layer;
         n1 = neur->id;
     } else {
         auto &neur = _hiddens[rand() % _hiddens.size()];
-        layer1 = neur->layer;
         n1 = neur->id;
     }
     // Chose randomly between outputs and hiddens (given their size)
@@ -314,14 +319,6 @@ void Network::getTwoNeuronIds(int &n1, int &n2) const
         n2 = _outputs[rand() % _outputs.size()]->id;
     } else {
         auto *neur = &_hiddens[rand() % _hiddens.size()];
-        int maxTries = std::min((size_t)100, _hiddens.size());
-        while (neur->get()->layer < layer1) {
-            if (maxTries-- < 0) {
-                n2 = _outputs[rand() % _outputs.size()]->id;
-                break;
-            }
-            neur = &_hiddens[rand() % _hiddens.size()];
-        }
         n2 = neur->get()->id;
     }
 }

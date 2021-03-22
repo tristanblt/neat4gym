@@ -32,8 +32,30 @@ namespace neat {
          * @param fitness the score gived to the previous compute
          * @param inputs the inputs of the previous observation
          * @return the Data structure, with the compute's outputs, and informations on the actual space
-         */
+         */ // TODO: remove
         const Data &step(bool isOver, float fitness, const std::vector<float> &inputs);
+
+        // TODO: implement
+        /**
+         * Get the result of a network
+         */
+        const std::vector<float> &compute(size_t network, const std::vector<float> &inputs);
+
+        /**
+         * Sets the fitness for a given network
+         */
+        void setFitness(size_t network, float fitness);
+
+        /**
+         * Mutates, generates offsprings and replaces the old population.
+         */
+        void nextGeneration();
+
+        /**
+         * Returns the population size
+         */
+        size_t size() const;
+        // TODO: end implement
 
         /**
          * Save the current population in a file.
