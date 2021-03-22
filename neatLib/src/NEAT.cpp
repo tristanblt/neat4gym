@@ -3,7 +3,7 @@
 using namespace neat;
 
 NEAT::NEAT(int pop, int inputs, int outputs):
-    _pop(pop, outputs, inputs)
+    _pop(pop, outputs, inputs, settings)
 {
     srand(0);
 }
