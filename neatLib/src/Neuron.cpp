@@ -31,14 +31,11 @@ void Neuron::computeLayersRec(size_t i)
 {
     if (i >= _to.size())
         return;
-    bool changed = false;
     if (_to[i].to->layer < layer + 1) {
-        changed = true;
         _to[i].to->layer = layer + 1;
+        _to[i].to->computeLayersRec();
     }
     computeLayersRec(i + 1);
-    if (changed)
-        _to[i].to->computeLayersRec();
 }
 
 static float sigmoid(float x, const Settings &settings)

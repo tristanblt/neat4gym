@@ -69,11 +69,6 @@ namespace neat {
         [[nodiscard]] bool canAddLink(int from, int to) const;
 
         /**
-         * Creates a new node and returns it's ID.
-         */
-        int createNode();
-
-        /**
          * Creates a new node with a provided ID and returns it's ID.
          */
         int createNode(int id);
@@ -82,12 +77,6 @@ namespace neat {
          * Disables a link if the link exists.
          */
         void disableLink(int from, int to) const;
-
-        /**
-         * Compute the layers recursively for all the nodes in the Network.
-         * Should be used after adding each link.
-         */
-        void computeLayers() const;
 
         /**
          * Returns the neuron if it exists and nullptr if it doesn't.
@@ -120,18 +109,12 @@ namespace neat {
          */
         void rebuildNetwork();
 
-        /**
-         * Returns and increments _nextNeuronId.
-         */
-        [[nodiscard]] int getNextNeuronId();
-
         std::vector<std::unique_ptr<Neuron>> _inputs;
         std::vector<std::unique_ptr<Neuron>> _hiddens;
         std::vector<std::unique_ptr<Neuron>> _outputs;
 
         std::vector<Genome> _innovations;
 
-        int _nextNeuronId = 0;
     };
 }
 

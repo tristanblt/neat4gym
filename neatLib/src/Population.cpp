@@ -5,7 +5,8 @@
 using namespace neat;
 
 Population::Population(int startPopulation, int outputs, int inputs):
-    _size(startPopulation)
+    _size(startPopulation),
+    _nextNeuronId(inputs + outputs)
 {
     _species.emplace_back(this);
     for (int i = 0; i < startPopulation; i++) {
@@ -17,13 +18,15 @@ Population::Population(int startPopulation, int outputs, int inputs):
         for (int j = 0; j < outputs; j++) {
             int innovationId = _innovationId++;
             for (auto &network: _networks) {
-                network->addLink(i, j + inputs, innovationId, 0);
+                if (!network->addLink(i, j + inputs, innovationId, 0)) {
+                    std::cout << i << " " << j + inputs << std::endl;
+                }
             }
         }
     }
-    for (auto &network: _networks) {
-        network->computeLayers();
-    }
+    // for (auto &network: _networks) {
+    //     network->computeLayers();
+    // }
 }
 
 void Population::computeBest(const std::vector<float> &inputs, std::vector<float> &outputs, const Settings &settings) const
@@ -70,7 +73,8 @@ void Population::purge(const Settings &settings)
         specie.maxPop = specie.size() * 1.2;
         if (specie.maxPop < 5)
             specie.maxPop += 2;
-        specie.purge(settings.toKill * specie.size());
+        if (specie.size() - 2 >= settings.toKill * specie.size())
+            specie.purge(settings.toKill * specie.size());
     }
     _networks.erase(
         std::remove_if(std::begin(_networks), std::end(_networks), [](const std::unique_ptr<Network> &network) {
@@ -127,7 +131,6 @@ void Population::findOrCreateSpecies(Network *network, const Settings &settings)
         _species.emplace_back(this);
         _species.back().addNetworkToSpecies(network);
         _species.back().setRepresentativeNetwork(network);
-
     }
 }
 
@@ -174,7 +177,7 @@ void Population::addNode(const std::unique_ptr<Network> &target, [[maybe_unused]
     auto &link = target->getRandomLink();
     target->disableLink(link.neuronFromId, link.neuronToId);
     link.enabled = false;
-    int newNeuron = target->createNode();
+    int newNeuron = target->createNode(_nextNeuronId++);
     target->addLink(link.neuronFromId, newNeuron, _innovationId++, link.linkWeight);
     target->addLink(newNeuron, link.neuronToId, _innovationId++, 1);
 }
