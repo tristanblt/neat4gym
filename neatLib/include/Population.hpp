@@ -79,6 +79,7 @@ namespace neat {
         size_t _size;
 
         int _innovationId = 0;
+        int _nextNeuronId;
     };
 }
 

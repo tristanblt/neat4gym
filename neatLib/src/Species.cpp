@@ -71,6 +71,8 @@ void Species::addToNewPop(Network *network)
 
 void Species::purge(size_t nb)
 {
+    if (_networks.size() <= 2)
+        return;
     std::sort(_networks.begin(), _networks.end(), [](const Network *n1, const Network *n2) {
         return n1->fitness < n2->fitness;
     });
