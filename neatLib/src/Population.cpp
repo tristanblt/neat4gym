@@ -23,9 +23,6 @@ Population::Population(int startPopulation, int outputs, int inputs, const Setti
             }
         }
     }
-    for (auto &network: _networks) {
-        network->computeLayers();
-    }
     mutateNetworks(settings);
 }
 
