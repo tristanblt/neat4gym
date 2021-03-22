@@ -1,6 +1,8 @@
 #include "Agent.hpp"
+#include <signal.h>
 
-Agent::Agent(const std::string &env, const std::string &endpoint)
+Agent::Agent(const std::string &env, const std::string &endpoint, int outputs):
+    _outputs(outputs)
 {
     _gr.setEndpoint(endpoint);
     _instanceId = _gr.createInstance(env);
@@ -10,8 +12,16 @@ Agent::~Agent()
 {
 }
 
+static bool receivedSigint = false;
+
+static void sigint_handler(int)
+{
+    receivedSigint = true;
+}
+
 void Agent::run(int population)
 {
+    signal(SIGINT, sigint_handler);
     std::vector<float> inputs;
     neat::NEAT::Data data;
     GymRequests::StepData step;
@@ -23,12 +33,13 @@ void Agent::run(int population)
     neat::NEAT neat(
         population,
         _gr.observationSpace(_instanceId).n,
-        _gr.actionSpace(_instanceId).n);
+        _outputs
+        );
 
-    while(true) {
+    while(!receivedSigint) {
         for (int episode = 0; episode < population; episode++) {
             inputs = _gr.reset(_instanceId);
-            while (true) {
+            while (!receivedSigint) {
                 data = neat.step(step.isOver, fitness, inputs);
                 step = _gr.step(_instanceId, data.outputs);
                 inputs = step.inputs;
@@ -44,7 +55,7 @@ void Agent::run(int population)
             }
         }
         float average = 0;
-        float best = 0;
+        float best = fitnesses.front();
         for (auto &a : fitnesses) {
             average += a;
             if (a > best)

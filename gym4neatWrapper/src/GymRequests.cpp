@@ -2,7 +2,7 @@
 
 GymRequests::GymRequests()
 {
-    _client = new CHTTPClient([](const std::string& a){});
+    _client = new CHTTPClient([](const std::string&){});
 
     _client->InitSession();
 
@@ -113,11 +113,32 @@ GymRequests::StepData GymRequests::step(const std::string &instanceId, const std
     // for (auto &e : action)
     //     std::cout << e << std::endl;
     // std::cout << "end" << std::endl;
+
     if (space.name == "Discrete") {
-        packet["action"] = (int)action[0];
+        packet["action"] = 0;
+
+        float max = 0;
+        for (size_t i = 0; i < action.size(); i++) {
+            if (action[i] > max) {
+                max = action[i];
+                packet["action"] = i;
+            }
+        }
+        // packet["action"] = (int)action[0];
+        // std::cout <<"caca" << std::endl
+        // packet["action"] = action;
     } else {
         packet["action"] = action;
     }
+
+    // std::vector<int> values;
+    // for (const float &a: action) {
+    //     if (a < 0.5)
+    //         values.push_back(0);
+    //     else
+    //         values.push_back(1);
+    // }
+    // packet["action"] = "[1,1,1,1]";
 
     packet["render"] = false;
     // std::cout << packet << std::endl;

@@ -7,16 +7,17 @@
 #include "NEAT.hpp"
 
 class Agent {
-    public:
-        Agent(const std::string &env, const std::string &endpoint);
-        ~Agent();
+public:
+    Agent(const std::string &env, const std::string &endpoint, int outputs);
+    ~Agent();
 
-        void run(int population);
+    void run(int population);
 
-    protected:
-    private:
-        GymRequests _gr;
-        std::string _instanceId;
+protected:
+private:
+    int _outputs;
+    GymRequests _gr;
+    std::string _instanceId;
 };
 
 #endif /* !AGENT_HPP_ */
