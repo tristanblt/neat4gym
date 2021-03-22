@@ -4,7 +4,7 @@
 
 using namespace neat;
 
-Population::Population(int startPopulation, int outputs, int inputs):
+Population::Population(int startPopulation, int outputs, int inputs, const Settings &settings):
     _size(startPopulation)
 {
     _species.emplace_back(this);
@@ -24,6 +24,7 @@ Population::Population(int startPopulation, int outputs, int inputs):
     for (auto &network: _networks) {
         network->computeLayers();
     }
+    mutateNetworks(settings);
 }
 
 void Population::computeBest(const std::vector<float> &inputs, std::vector<float> &outputs, const Settings &settings) const

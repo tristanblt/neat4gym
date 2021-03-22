@@ -9,7 +9,7 @@
 namespace neat {
 
     struct Population {
-        Population(int startPopulation, int outputs, int inputs);
+        Population(int startPopulation, int outputs, int inputs, const Settings &settings);
         ~Population() = default;
 
         /**
