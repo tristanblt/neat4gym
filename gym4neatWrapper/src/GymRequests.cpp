@@ -140,7 +140,7 @@ GymRequests::StepData GymRequests::step(const std::string &instanceId, const std
     // }
     // packet["action"] = "[1,1,1,1]";
 
-    packet["render"] = true;
+    packet["render"] = false;
     // std::cout << packet << std::endl;
     _client->Post(
         _endpoint + "/envs/" + instanceId + "/step",

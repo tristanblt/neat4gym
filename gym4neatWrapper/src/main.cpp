@@ -2,8 +2,8 @@
 
 int main(int argc, char const *argv[])
 {
-    Agent cartPole("CartPole-v0", "http://127.0.0.1:12345/v1/", 2);
-    cartPole.run(50);
+    Agent cartPole("LunarLander-v2", "http://127.0.0.1:12345/v1/", 4);
+    cartPole.run(250, 1);
 
     return 0;
 

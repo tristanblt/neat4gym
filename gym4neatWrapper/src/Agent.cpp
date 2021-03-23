@@ -19,7 +19,7 @@ static void sigint_handler(int)
     receivedSigint = true;
 }
 
-void Agent::run(int population)
+void Agent::run(int population, int runs)
 {
     signal(SIGINT, sigint_handler);
     std::vector<float> inputs;
@@ -39,22 +39,23 @@ void Agent::run(int population)
     int generation = 0;
     while(!receivedSigint) {
         for (int episode = 0; episode < population; episode++) {
-            inputs = _gr.reset(_instanceId);
-            while (!receivedSigint) {
-                const auto &outputs = neat.compute(episode, inputs);
-                step = _gr.step(_instanceId, outputs);
-                inputs = step.inputs;
+            for (int i = 0; i < runs; i++) {
+                inputs = _gr.reset(_instanceId);
+                while (!receivedSigint) {
+                    const auto &outputs = neat.compute(episode, inputs);
+                    step = _gr.step(_instanceId, outputs);
+                    inputs = step.inputs;
 
-                fitness += step.score;
+                    fitness += step.score;
 
-                if (step.isOver) {
-                    // std::cout << data.currentGeneration << "-" << (episode + 1) << " -> fitness: " << fitness << std::endl;
-                    fitnesses.push_back(fitness);
-                    neat.setFitness(episode, fitness);
-                    fitness = 0;
-                    break;
+                    if (step.isOver)
+                        break;
                 }
             }
+            fitness = fitness / static_cast<float>(runs);
+            fitnesses.push_back(fitness);
+            neat.setFitness(episode, fitness);
+            fitness = 0;
         }
         neat.nextGeneration();
         generation++;

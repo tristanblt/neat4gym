@@ -136,10 +136,14 @@ void Population::addLink(const std::unique_ptr<Network> &target, const Settings 
     int n1 = 0, n2 = 0;
     float weight = (float)(rand() % 200) / 50.0 - 1.0;
 
-
-    target->getTwoNeuronIds(n1, n2);
-    if (!target->addLink(n1, n2, _innovationId++, weight))
-        return;
+    int tries = 100;
+    while (true) {
+        target->getTwoNeuronIds(n1, n2);
+        if (target->addLink(n1, n2, _innovationId++, weight))
+            break;
+        if (tries-- < 0)
+            return;
+    }
     target->mutations++;
     // for (auto &network: _networks) {
     //     if (network->mutations > settings.maxMutation || !Settings::doRand(settings.doMutation))

@@ -11,7 +11,7 @@ public:
     Agent(const std::string &env, const std::string &endpoint, int outputs);
     ~Agent();
 
-    void run(int population);
+    void run(int population, int runs = 1);
 
 protected:
 private:

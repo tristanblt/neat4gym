@@ -32,7 +32,7 @@ std::unique_ptr<Network> Network::copy() const
 const std::vector<float> &Network::compute(const std::vector<float> &inputs, const Settings &settings)
 {
     _values.clear();
-    for (size_t i = 0; i < inputs.size(); ++i ) {
+    for (size_t i = 0; i < _inputs.size(); ++i ) {
         _inputs[i]->setValue(inputs[i]);
     }
     _values.reserve(_outputs.size());
