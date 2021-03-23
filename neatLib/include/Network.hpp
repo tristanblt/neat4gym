@@ -33,7 +33,7 @@ namespace neat {
          * @param settings the settings of the algoritm
          * @return the computed outputs
          */
-        [[nodiscard]] std::vector<float> compute(const std::vector<float> &inputs, const Settings &settings) const;
+        [[nodiscard]] const std::vector<float> &compute(const std::vector<float> &inputs, const Settings &settings);
 
         /**
          * Makes a crossover child given two networks.
@@ -114,6 +114,8 @@ namespace neat {
         std::vector<std::unique_ptr<Neuron>> _outputs;
 
         std::vector<Genome> _innovations;
+
+        std::vector<float> _values;
 
     };
 }

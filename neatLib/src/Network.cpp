@@ -29,22 +29,22 @@ std::unique_ptr<Network> Network::copy() const
     return n;
 }
 
-std::vector<float> Network::compute(const std::vector<float> &inputs, const Settings &settings) const
+const std::vector<float> &Network::compute(const std::vector<float> &inputs, const Settings &settings)
 {
-    std::vector<float> values;
+    _values.clear();
     for (size_t i = 0; i < inputs.size(); ++i ) {
         _inputs[i]->setValue(inputs[i]);
     }
-    values.reserve(_outputs.size());
+    _values.reserve(_outputs.size());
     unsigned turn = _outputs.front()->_turn + 1;
     for (auto &output: _outputs) {
-        values.push_back(output->computeValue(turn, settings));
-        if (values.back() > 1.0)
-            values.back() = 1;
-        else if (values.back() < 0.0)
-            values.back() = 0;
+        _values.push_back(output->computeValue(turn, settings));
+        if (_values.back() > 1.0)
+            _values.back() = 1;
+        else if (_values.back() < 0.0)
+            _values.back() = 0;
     }
-    return values;
+    return _values;
 }
 
 std::unique_ptr<Network> Network::crossover(const Network &a, const Network &b)

@@ -2,7 +2,7 @@
 
 int main(int argc, char const *argv[])
 {
-    Agent cartPole("CartPole-v1", "http://127.0.0.1:12345/v1/", 2);
+    Agent cartPole("CartPole-v0", "http://127.0.0.1:12345/v1/", 2);
     cartPole.run(50);
 
     return 0;

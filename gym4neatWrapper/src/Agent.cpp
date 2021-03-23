@@ -23,7 +23,7 @@ void Agent::run(int population)
 {
     signal(SIGINT, sigint_handler);
     std::vector<float> inputs;
-    neat::NEAT::Data data;
+    // neat::NEAT::Data data;
     GymRequests::StepData step;
     float fitness = 0;
     std::vector<float> fitnesses;
@@ -36,12 +36,13 @@ void Agent::run(int population)
         _outputs
         );
 
+    int generation = 0;
     while(!receivedSigint) {
         for (int episode = 0; episode < population; episode++) {
             inputs = _gr.reset(_instanceId);
             while (!receivedSigint) {
-                data = neat.step(step.isOver, fitness, inputs);
-                step = _gr.step(_instanceId, data.outputs);
+                const auto &outputs = neat.compute(episode, inputs);
+                step = _gr.step(_instanceId, outputs);
                 inputs = step.inputs;
 
                 fitness += step.score;
@@ -49,11 +50,15 @@ void Agent::run(int population)
                 if (step.isOver) {
                     // std::cout << data.currentGeneration << "-" << (episode + 1) << " -> fitness: " << fitness << std::endl;
                     fitnesses.push_back(fitness);
+                    neat.setFitness(episode, fitness);
                     fitness = 0;
                     break;
                 }
             }
         }
+        neat.nextGeneration();
+        generation++;
+
         float average = 0;
         float best = fitnesses.front();
         for (auto &a : fitnesses) {
@@ -63,7 +68,7 @@ void Agent::run(int population)
         }
         average /= fitnesses.size();
         fitnesses.clear();
-        std::cout << "Generation: " << data.currentGeneration << " -> average: " << average << ", best: " << best << std::endl;
+        std::cout << "Generation: " << generation << " -> average: " << average << ", best: " << best << std::endl;
     }
     _gr.closeMonitor(_instanceId);
 }
