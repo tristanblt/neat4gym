@@ -26,17 +26,6 @@ namespace neat {
         ~NEAT();
 
         /**
-         * Step the population.
-         * This will compute the next network and at the end of a generation, will create mutations inside of the networks
-         * @param isOver true at the end of an episode
-         * @param fitness the score gived to the previous compute
-         * @param inputs the inputs of the previous observation
-         * @return the Data structure, with the compute's outputs, and informations on the actual space
-         */ // TODO: remove
-        const Data &step(bool isOver, float fitness, const std::vector<float> &inputs);
-
-        // TODO: implement
-        /**
          * Get the result of a network
          */
         const std::vector<float> &compute(size_t network, const std::vector<float> &inputs);
@@ -55,7 +44,6 @@ namespace neat {
          * Returns the population size
          */
         size_t size() const;
-        // TODO: end implement
 
         /**
          * Save the current population in a file.
@@ -82,13 +70,6 @@ namespace neat {
         Settings settings;
 
         private:
-            /**
-             * Prepare the population to the next generation
-             * This method will also compute the mutations and the
-             * crossovers of the last generation
-             */
-            void prepareNextGeneration();
-
             Population _pop;
             Data _data;
 

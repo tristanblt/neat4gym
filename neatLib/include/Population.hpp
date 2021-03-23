@@ -21,7 +21,7 @@ namespace neat {
          * Compute a given network
          * @param n the index of the network in the population
          */
-        void compute(size_t n, const std::vector<float> &inputs, std::vector<float> &outputs, const Settings &settings) const;
+        const std::vector<float> &compute(size_t n, const std::vector<float> &inputs, const Settings &settings) const;
 
         /**
          * Set the fitness of a given network
