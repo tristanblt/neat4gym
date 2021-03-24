@@ -1,5 +1,6 @@
 #include "Agent.hpp"
 #include <signal.h>
+#include <Python.h>
 
 static bool receivedSigint = false;
 
@@ -24,7 +25,32 @@ Agent::Agent(const std::string &env, const std::string &endpoint, int outputs, i
         _outputs,
         _settings
         );
+    // TEMP
+    PyObject *gymModule, *pModule, *pDict, *pFunc;
+    std::cout << "DEBUT PYTHON" << std::endl;
 
+    Py_Initialize();
+    // gymModule = PyString_FromString("gym");
+    // pModule = PyImport_Import(gymModule);
+    PyRun_SimpleString("import gym");
+    std::cout << "u" << std::endl;
+
+    pDict = PyModule_GetDict(pModule);
+    pFunc = PyDict_GetItemString(pDict, "caca");
+
+    if (PyCallable_Check(pFunc)) {
+        std::cout << "CHECK" << std::endl;
+        PyObject_CallObject(pFunc, NULL);
+    } else {
+        PyErr_Print();
+    }
+
+    Py_DECREF(pModule);
+    Py_DECREF(gymModule);
+
+    Py_Finalize();
+    std::cout << "FIN PYTHON" << std::endl;
+    // END TEMP
 }
 
 Agent::~Agent() = default;
@@ -70,6 +96,11 @@ const Agent::RunData &Agent::runOne(int runs, bool render)
     _data.complete = true;
     return _data;
 }
+
+struct Neat4Gym
+{
+    
+};
 
 // void Agent::run(int population, int runs)
 // {
