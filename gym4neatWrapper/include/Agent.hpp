@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "NEAT.hpp"
+#include <Python.h>
 
 class Agent {
 public:
@@ -24,12 +25,19 @@ public:
 
     std::unique_ptr<neat::NEAT> neat;
 
+    std::vector<float> reset();
+    void step(const std::vector<float> &action, std::vector<float> &observations, bool &isover, float &fitness);
+    void render();
+
 private:
     int _outputs;
     RunData _data;
     GymRequests _gr;
     std::string _instanceId;
     const neat::Settings &_settings;
+    PyObject *_module;
+    PyObject *_gym_make;
+    PyObject *_env;
 };
 
 #endif /* !AGENT_HPP_ */
