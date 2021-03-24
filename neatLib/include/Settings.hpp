@@ -8,7 +8,7 @@ namespace neat {
         float toKill = 0.5;
         float similarity = 2;
         int maxStagnation = 15;
-        float crossoverRate = 0.75;
+        float crossoverRate = 0;
         float weightMutationRate = 0.8;
         float weightRandomRate = 0.1;
         float weightChangeRate = 0.9;
@@ -20,9 +20,9 @@ namespace neat {
         float similarityCoefDisjoint = 1;
         float similarityCoefWeight = 0.4;
         float mutationChangeWeight = 0.1;
-        int minMutations = 5;
+        int minMutations = 10;
         // float doMutation = 0.9;
-        float maxMutationWeight = 1;
+        float maxMutationWeight = 0.1;
 
         static bool doRand(float value) {
             return value == 0 ? false : rand() % ((int)(1.0 / value) * 1000) < 1000;

@@ -24,7 +24,7 @@ GymShell::GymShell(int challenge, int population)
         env = "CartPole-v1";
         outputs = 2;
         inputs = 4;
-        settings.minMutations = 3;
+        // settings.minMutations = 3;
         break;
     }
     case 2: {

@@ -112,7 +112,7 @@ const Agent::RunData &Agent::runOne(int runs, bool rend)
         if (receivedSigint)
             return _data;
 
-        for (int i = 0; i < runs; i++) {
+        for (int run = 0; run < runs; run++) {
             inputs = reset();
             while (!receivedSigint) {
                 const auto &outputs = neat->compute(i, inputs);

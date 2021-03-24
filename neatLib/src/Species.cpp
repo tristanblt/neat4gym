@@ -27,7 +27,7 @@ Network *Species::getBestNetwork() const
 void Species::computeSpecies(const Settings &settings)
 {
     for (auto &network : _networks) {
-        float similarity = Network::computeSimilarity(
+        float similarity = network == nullptr ? 0 : Network::computeSimilarity(
             *_representativeNetwork,
             *network,
             settings
