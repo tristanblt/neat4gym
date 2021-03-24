@@ -16,7 +16,7 @@ public:
         bool complete = false;
     };
 
-    Agent(const std::string &env, int inputs, int outputs, int population, const neat::Settings &settings);
+    Agent(const std::string &env, int inputs, int outputs, bool discrete, int population, const neat::Settings &settings);
     ~Agent();
 
     const RunData &runOne(int runs, bool render);
@@ -30,9 +30,12 @@ public:
 private:
     int _outputs;
     RunData _data;
+    bool _discrete;
     const neat::Settings &_settings;
     PyObject *_module;
+    PyObject *_numpy;
     PyObject *_gym_make;
+    PyObject *_numpy_array;
     PyObject *_env;
 };
 

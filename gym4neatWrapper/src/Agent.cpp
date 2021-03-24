@@ -33,8 +33,9 @@ static PyObject* vectorToList_Float(const std::vector<float> &data) {
     return listObj;
 }
 
-Agent::Agent(const std::string &env, int inputs, int outputs, int population, const neat::Settings &settings):
+Agent::Agent(const std::string &env, int inputs, int outputs, bool discrete, int population, const neat::Settings &settings):
     _outputs(outputs),
+    _discrete(discrete),
     _settings(settings)
 {
     signal(SIGINT, sigint_handler);
@@ -49,17 +50,18 @@ Agent::Agent(const std::string &env, int inputs, int outputs, int population, co
     Py_Initialize();
     []()->void *{import_array(); return 0;}();
     PyObject* myModuleString = PyUnicode_FromString("gym");
+    PyObject* numpyModuleString = PyUnicode_FromString("numpy");
     _module = PyImport_Import(myModuleString);
+    _numpy = PyImport_Import(numpyModuleString);
     _gym_make = PyObject_GetAttrString(_module, (char*)"make");
+    _numpy_array = PyObject_GetAttrString(_numpy, (char*)"array");
     PyObject* args = PyTuple_Pack(1, PyUnicode_FromString(env.c_str()));
     _env = PyObject_CallObject(_gym_make, args);
+    if (!_env) {
+        PyErr_Print();
+        exit(1);
+    }
 
-    reset();
-    std::vector<float> vec;
-    auto vec2 = vec;
-    bool isover = false;
-    float fitness;
-    step(vec, vec2, isover, fitness);
 }
 
 Agent::~Agent()
@@ -77,15 +79,33 @@ std::vector<float> Agent::reset()
 void Agent::step(const std::vector<float> &action, std::vector<float> &observation, bool &isover, float &fitness)
 {
     observation.clear();
-    int a = 0;
-    float max = 0;
-    for (size_t i = 0; i < action.size(); i++) {
-        if (action[i] > max) {
-            max = action[i];
-            a = i;
+    PyObject *value;
+
+    if (_discrete) {
+        int a = 0;
+        float max = 0;
+        for (size_t i = 0; i < action.size(); i++) {
+            if (action[i] > max) {
+                max = action[i];
+                a = i;
+            }
         }
+        value = PyObject_CallMethod(_env, "step", "i", a);
+    } else {
+        std::vector<float> values;
+        for (size_t i = 0; i + 1 < action.size(); i+=2) {
+            // if (action[i] > action[i + 1]) {
+            //     values.push_back(action[i]);
+            // } else {
+            //     values.push_back(-action[i + 1]);
+            // }
+            values.push_back(action[i] - action[i + 1]);
+        }
+        value = vectorToList_Float(values);
+        PyObject* args = PyTuple_Pack(1, value);
+        value = PyObject_CallObject(_numpy_array, args);
+        value = PyObject_CallMethodOneArg(_env, PyUnicode_FromString("step"), value);
     }
-    PyObject *value = PyObject_CallMethod(_env, "step", "i", a);
     if (value) {
         observation = listTupleToVector_Float(PyArray_ToList((PyArrayObject *)PyTuple_GetItem(value, 0)));
         fitness = PyFloat_AsDouble(PyTuple_GetItem(value, 1));

@@ -19,7 +19,7 @@ Population::Population(int startPopulation, int outputs, int inputs, const Setti
         for (int j = 0; j < outputs; j++) {
             int innovationId = _innovationId++;
             for (auto &network: _networks) {
-                if (!network->addLink(i, j + inputs, innovationId, 1)) {
+                if (!network->addLink(i, j + inputs, innovationId, 0)) {
                     std::cout << i << " " << j + inputs << std::endl;
                 }
             }

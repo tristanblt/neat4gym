@@ -19,11 +19,13 @@ GymShell::GymShell(int challenge, int population)
     std::string env;
     int outputs = 0;
     int inputs = 0;
+    bool discrete = false;
     switch (challenge) {
     case 1: {
         env = "CartPole-v1";
         outputs = 2;
         inputs = 4;
+        discrete = true;
         // settings.minMutations = 3;
         break;
     }
@@ -31,30 +33,34 @@ GymShell::GymShell(int challenge, int population)
         env = "LunarLander-v2";
         outputs = 4;
         inputs = 8;
+        discrete = true;
         break;
     }
     case 3: {
-        env = "MountainCar-v0";
-        outputs = 3;
-        inputs = 4;
+        env = "LunarLanderContinuous-v2";
+        outputs = 4;
+        inputs = 8;
+        discrete = false;
         break;
     }
     case 4: {
-        env = "Acrobot-v1";
-        outputs = 3;
-        inputs = 4;
+        env = "BipedalWalker-v2";
+        outputs = 8;
+        inputs = 24;
+        discrete = false;
         break;
     }
     case 5: {
         env = "Pendulum-v0";
         outputs = 2;
-        inputs = 4;
+        inputs = 3;
+        discrete = false;
         break;
     }
     default:
         throw std::exception();
     }
-    _agent = std::make_unique<Agent>(env, inputs, outputs, population, settings);
+    _agent = std::make_unique<Agent>(env, inputs, outputs, discrete, population, settings);
 }
 
 void GymShell::exit(const std::vector<std::string> &)
