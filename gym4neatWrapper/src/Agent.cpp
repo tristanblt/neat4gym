@@ -144,36 +144,3 @@ const Agent::RunData &Agent::runOne(int runs, bool rend)
     _data.complete = true;
     return _data;
 }
-
-// void Agent::run(int population, int runs)
-// {
-//     std::vector<float> inputs;
-//     GymRequests::StepData step;
-//     float fitness = 0;
-//     std::vector<float> fitnesses;
-
-//     _gr.startMonitor(_instanceId);
-
-//                         break;
-//                 }
-//             }
-//             fitness = fitness / static_cast<float>(runs);
-//             neat.setFitness(episode, fitness);
-//             fitness = 0;
-//         }
-//         neat.nextGeneration();
-//         generation++;
-
-//         float average = 0;
-//         float best = fitnesses.front();
-//         for (auto &a : fitnesses) {
-//             average += a;
-//             if (a > best)
-//                 best = a;
-//         }
-//         average /= fitnesses.size();
-//         fitnesses.clear();
-//         std::cout << "Generation: " << generation << " -> average: " << average << ", best: " << best << std::endl;
-//     }
-//     _gr.closeMonitor(_instanceId);
-// }
