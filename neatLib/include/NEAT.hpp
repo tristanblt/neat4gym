@@ -24,7 +24,7 @@ namespace neat {
          * @param outputs the number of outputs in the networks
          * @param inputs the number of inputs in the networks
          */
-        NEAT(int pop, int outputs, int inputs);
+        NEAT(int pop, int outputs, int inputs, const Settings &settings);
         ~NEAT();
 
         /**
@@ -66,12 +66,8 @@ namespace neat {
          */
         void compute(const std::vector<float> &inputs, std::vector<float> &outputs) const;
 
-        /**
-         * The current settings of the algoritm
-         */
-        Settings settings;
-
         private:
+            const Settings &_settings;
             Population *_pop;
             Data _data;
 

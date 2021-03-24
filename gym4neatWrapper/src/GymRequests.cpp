@@ -99,7 +99,7 @@ GymRequests::Space GymRequests::observationSpace(const std::string &instanceId)
     return (space);
 }
 
-GymRequests::StepData GymRequests::step(const std::string &instanceId, const std::vector<float> &action)
+GymRequests::StepData GymRequests::step(const std::string &instanceId, const std::vector<float> &action, bool render)
 {
     CHTTPClient::HttpResponse httpResponse;
     json packet;
@@ -119,7 +119,7 @@ GymRequests::StepData GymRequests::step(const std::string &instanceId, const std
     } else {
         packet["action"] = action;
     }
-    packet["render"] = true;
+    packet["render"] = render;
     _client->Post(
         _endpoint + "/envs/" + instanceId + "/step",
         _headers,

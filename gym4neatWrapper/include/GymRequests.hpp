@@ -8,36 +8,36 @@
 using json = nlohmann::json;
 
 class GymRequests {
-    public:
-        GymRequests();
-        ~GymRequests();
+public:
+    GymRequests();
+    ~GymRequests();
 
-        struct StepData {
-            std::vector<float> inputs;
-            float score;
-            bool isOver;
-        };
+    struct StepData {
+        std::vector<float> inputs;
+        float score;
+        bool isOver;
+    };
 
-        struct Space {
-            std::string name;
-            int n;
-        };
+    struct Space {
+        std::string name;
+        int n;
+    };
 
-        std::string createInstance(const std::string &env);
-        void startMonitor(const std::string &instanceId);
-        void closeMonitor(const std::string &instanceId);
-        Space actionSpace(const std::string &instanceId);
-        Space observationSpace(const std::string &instanceId);
-        StepData step(const std::string &instanceId, const std::vector<float> &action);
-        std::vector<float> reset(const std::string &instanceId);
+    std::string createInstance(const std::string &env);
+    void startMonitor(const std::string &instanceId);
+    void closeMonitor(const std::string &instanceId);
+    Space actionSpace(const std::string &instanceId);
+    Space observationSpace(const std::string &instanceId);
+    StepData step(const std::string &instanceId, const std::vector<float> &action, bool render);
+    std::vector<float> reset(const std::string &instanceId);
 
-        void setEndpoint(const std::string &endpoint);
+    void setEndpoint(const std::string &endpoint);
 
-    protected:
-    private:
-        CHTTPClient::HeadersMap _headers;
-        CHTTPClient *_client;
-        std::string _endpoint;
+protected:
+private:
+    CHTTPClient::HeadersMap _headers;
+    CHTTPClient *_client;
+    std::string _endpoint;
 };
 
 #endif /* !GYMREQUESTS_HPP_ */
