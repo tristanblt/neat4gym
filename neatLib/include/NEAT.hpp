@@ -5,6 +5,8 @@
 #include "Population.hpp"
 #include <functional>
 #include <iostream>
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 namespace neat {
 
@@ -64,10 +66,10 @@ namespace neat {
          */
         void compute(const std::vector<float> &inputs, std::vector<float> &outputs) const;
 
-    private:
-        const Settings &_settings;
-        Population _pop;
-        Data _data;
+        private:
+            const Settings &_settings;
+            Population *_pop;
+            Data _data;
 
     };
 }

@@ -10,6 +10,7 @@ namespace neat {
 
     struct Population {
         Population(int startPopulation, int outputs, int inputs, const Settings &settings);
+        Population(std::vector<std::unique_ptr<Network>> *networks, int outputs, int inputs, const Settings &settings);
         ~Population() = default;
 
         /**
@@ -51,6 +52,14 @@ namespace neat {
          * and create a new species if there is no results
          */
         void findOrCreateSpecies(Network *network, const Settings &settings);
+
+        /**
+         * Get the population's network
+         */
+        std::vector<std::unique_ptr<Network>> &getNetworks();
+
+        int networksInputs;
+        int networksOutputs;
 
     private:
         /**

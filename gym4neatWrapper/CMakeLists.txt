@@ -10,6 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STANDARD_UNIX_CXX_FLAGS}")
 file(GLOB_RECURSE PROJECT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "${PROJECT_SOURCE_DIR}/gym4neatWrapper/src/*.cpp" "${PROJECT_SOURCE_DIR}/gym4neatWrapper/include/*.hpp")
 
 find_package(nlohmann_json 3.2.0 REQUIRED)
+find_package(PythonLibs REQUIRED)
 
 add_executable(gym4neatWrapper ${PROJECT_SOURCES})
 
@@ -18,3 +19,6 @@ target_include_directories(gym4neatWrapper PUBLIC "${PROJECT_SOURCE_DIR}/../neat
 
 target_link_libraries(gym4neatWrapper PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(gym4neatWrapper PRIVATE neatLib)
+target_link_libraries(gym4neatWrapper PRIVATE ${PYTHON_LIBRARIES})
+
+include_directories(${PYTHON_INCLUDE_DIRS})

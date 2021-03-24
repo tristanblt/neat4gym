@@ -15,11 +15,17 @@ Network::Network(int inputs, int outputs)
     int neuronId = 0;
     for (int i = 0; i < inputs; i++) {
         _inputs.push_back(std::make_unique<Neuron>(neuronId++));
-        // _inputs.back()->layer = 0;
     }
     for (int i = 0; i < outputs; i++)
         _outputs.push_back(std::make_unique<Neuron>(neuronId++));
 }
+
+Network::Network(std::vector<Genome> innovations, int inputs, int outputs)
+{
+    _innovations = innovations;
+    rebuildNetwork(inputs, outputs);
+}
+
 
 std::unique_ptr<Network> Network::copy() const
 {
@@ -247,9 +253,11 @@ int Network::createNode(int id)
 
 void Network::rebuildNetwork()
 {
-    size_t inputsSize = _inputs.size();
-    size_t outputsSize = _outputs.size();
+    rebuildNetwork(_inputs.size(), _outputs.size());
+}
 
+void Network::rebuildNetwork(int inputsSize, int outputsSize)
+{
     _inputs.clear();
     _hiddens.clear();
     _outputs.clear();
@@ -327,4 +335,9 @@ void Network::getTwoNeuronIds(int &n1, int &n2) const
         auto *neur = &_hiddens[rand() % _hiddens.size()];
         n2 = neur->get()->id;
     }
+}
+
+std::vector<Genome> &Network::getInnovations()
+{
+    return _innovations;
 }
