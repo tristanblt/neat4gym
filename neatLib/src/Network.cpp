@@ -3,6 +3,7 @@
 #include "Settings.hpp"
 #include <algorithm>
 #include <iostream>
+#include <cmath>
 
 using namespace neat;
 
@@ -35,6 +36,11 @@ std::unique_ptr<Network> Network::copy() const
     return n;
 }
 
+static float sigmoid(float x, const Settings &settings)
+{
+    return 1.0 / (1.0 + exp(-x * settings.sigmoidMult));
+}
+
 const std::vector<float> &Network::compute(const std::vector<float> &inputs, const Settings &settings)
 {
     _values.clear();
@@ -44,7 +50,7 @@ const std::vector<float> &Network::compute(const std::vector<float> &inputs, con
     _values.reserve(_outputs.size());
     unsigned turn = _outputs.front()->_turn + 1;
     for (auto &output: _outputs) {
-        _values.push_back(output->computeValue(turn, settings));
+        _values.push_back(sigmoid(output->computeValue(turn, settings), settings));
         if (_values.back() > 1.0)
             _values.back() = 1;
         else if (_values.back() < 0.0)
@@ -56,7 +62,7 @@ const std::vector<float> &Network::compute(const std::vector<float> &inputs, con
 std::unique_ptr<Network> Network::crossover(const Network &a, const Network &b)
 {
     const Network &best = a.fitness > b.fitness ? a : b;
-    const Network &worst = b.fitness > a.fitness ? a : b;
+    const Network &worst = a.fitness > b.fitness ? b : a;
     std::unique_ptr<Network> child = std::make_unique<Network>(a._inputs.size(), a._outputs.size());
 
     int maxInnovatoinIdWorst = worst._innovations.back().innovationId;

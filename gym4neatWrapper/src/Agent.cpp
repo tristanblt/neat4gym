@@ -1,6 +1,6 @@
 #include "Agent.hpp"
 #include <signal.h>
-#include <Python.h>
+#include <numpy/ndarrayobject.h>
 
 static bool receivedSigint = false;
 
@@ -9,7 +9,30 @@ static void sigint_handler(int)
     receivedSigint = true;
 }
 
-Agent::Agent(const std::string &env, const std::string &endpoint, int outputs, int inputs, int population, const neat::Settings &settings):
+std::vector<float> listTupleToVector_Float(PyObject* incoming) {
+    std::vector<float> data;
+    for(Py_ssize_t i = 0; i < PyList_Size(incoming); i++) {
+        PyObject *value = PyList_GetItem(incoming, i);
+        data.push_back( PyFloat_AsDouble(value) );
+    }
+    return data;
+}
+
+PyObject* vectorToList_Float(const std::vector<float> &data) {
+    PyObject* listObj = PyList_New( data.size() );
+    if (!listObj) throw std::logic_error("Unable to allocate memory for Python list");
+    for (unsigned int i = 0; i < data.size(); i++) {
+        PyObject *num = PyFloat_FromDouble( (double) data[i]);
+        if (!num) {
+            Py_DECREF(listObj);
+            throw std::logic_error("Unable to allocate memory for Python list");
+        }
+        PyList_SET_ITEM(listObj, i, num);
+    }
+    return listObj;
+}
+
+Agent::Agent(const std::string &env, int inputs, int outputs, int population, const neat::Settings &settings):
     _outputs(outputs),
     _settings(settings)
 {
@@ -21,40 +44,65 @@ Agent::Agent(const std::string &env, const std::string &endpoint, int outputs, i
         _outputs,
         _settings
         );
-    // TEMP
-    PyObject *gymModule, *pModule, *pDict, *pFunc;
-    std::cout << "DEBUT PYTHON" << std::endl;
 
     Py_Initialize();
-    // gymModule = PyString_FromString("gym");
-    // pModule = PyImport_Import(gymModule);
-    PyRun_SimpleString("import gym");
-    std::cout << "u" << std::endl;
+    []()->long{import_array(); return 0;}();
+    PyObject* myModuleString = PyUnicode_FromString("gym");
+    _module = PyImport_Import(myModuleString);
+    _gym_make = PyObject_GetAttrString(_module, (char*)"make");
+    PyObject* args = PyTuple_Pack(1, PyUnicode_FromString(env.c_str()));
+    _env = PyObject_CallObject(_gym_make, args);
 
-    pDict = PyModule_GetDict(pModule);
-    pFunc = PyDict_GetItemString(pDict, "caca");
-remove
-    if (PyCallable_Check(pFunc)) {
-        std::cout << "CHECK" << std::endl;
-        PyObject_CallObject(pFunc, NULL);
-    } else {
-        PyErr_Print();
-    }
-
-    Py_DECREF(pModule);
-    Py_DECREF(gymModule);
-
-    Py_Finalize();
-    std::cout << "FIN PYTHON" << std::endl;
-    // END TEMP
+    reset();
+    std::vector<float> vec;
+    auto vec2 = vec;
+    bool isover = false;
+    float fitness;
+    step(vec, vec2, isover, fitness);
 }
 
-Agent::~Agent() = default;
+Agent::~Agent()
+{
+    Py_Finalize();
+}
 
-const Agent::RunData &Agent::runOne(int runs, bool render)
+std::vector<float> Agent::reset()
+{
+    PyObject *value = PyObject_CallMethod(_env, "reset", "()");
+    value = PyArray_ToList((PyArrayObject *)value);
+    return listTupleToVector_Float(value);
+}
+
+void Agent::step(const std::vector<float> &action, std::vector<float> &observation, bool &isover, float &fitness)
+{
+    observation.clear();
+    int a = 0;
+    float max = 0;
+    for (size_t i = 0; i < action.size(); i++) {
+        if (action[i] > max) {
+            max = action[i];
+            a = i;
+        }
+    }
+    PyObject *value = PyObject_CallMethod(_env, "step", "i", a);
+    if (value) {
+        observation = listTupleToVector_Float(PyArray_ToList((PyArrayObject *)PyTuple_GetItem(value, 0)));
+        fitness = PyFloat_AsDouble(PyTuple_GetItem(value, 1));
+        isover = PyObject_IsTrue(PyTuple_GetItem(value, 2));
+    } else {
+        PyErr_Print();
+        exit(1);
+    }
+}
+
+void Agent::render()
+{
+    PyObject_CallMethod(_env, "render", "()");
+}
+
+const Agent::RunData &Agent::runOne(int runs, bool rend)
 {
     std::vector<float> inputs;
-    GymRequests::StepData step;
     float fitness = 0;
 
     receivedSigint = false;
@@ -64,13 +112,16 @@ const Agent::RunData &Agent::runOne(int runs, bool render)
             return _data;
 
         for (int i = 0; i < runs; i++) {
-            inputs = _gr.reset(_instanceId);
+            inputs = reset();
             while (!receivedSigint) {
                 const auto &outputs = neat->compute(i, inputs);
-                step = _gr.step(_instanceId, outputs, render);
-                inputs = step.inputs;
-                fitness += step.score;
-                if (step.isOver)
+                float stepFitness = 0;
+                bool isover = false;
+                step(outputs, inputs, isover, stepFitness);
+                fitness += stepFitness;
+                if (rend)
+                    render();
+                if (isover)
                     break;
             }
         }
@@ -92,11 +143,6 @@ const Agent::RunData &Agent::runOne(int runs, bool render)
     _data.complete = true;
     return _data;
 }
-
-struct Neat4Gym
-{
-    
-};
 
 // void Agent::run(int population, int runs)
 // {

@@ -1,12 +1,11 @@
 #include "Agent.hpp"
 #include "GymShell.hpp"
 
+#include <Python.h>
+
 int main(int argc, char const *argv[])
 {
-    // Agent cartPole("CartPole-v1", "http://127.0.0.1:12345/v1/", 2, 50);
-    // cartPole.runOne(1);
     GymShell shell(1, 150);
-
     shell.run();
     return 0;
 

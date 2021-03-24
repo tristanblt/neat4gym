@@ -11,6 +11,7 @@ file(GLOB_RECURSE PROJECT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "${PROJECT_SOURCE
 
 find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(PythonLibs REQUIRED)
+find_package(Python3 REQUIRED COMPONENTS NumPy)
 
 add_executable(gym4neatWrapper ${PROJECT_SOURCES})
 
@@ -20,5 +21,6 @@ target_include_directories(gym4neatWrapper PUBLIC "${PROJECT_SOURCE_DIR}/../neat
 target_link_libraries(gym4neatWrapper PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(gym4neatWrapper PRIVATE neatLib)
 target_link_libraries(gym4neatWrapper PRIVATE ${PYTHON_LIBRARIES})
+target_link_libraries(gym4neatWrapper PRIVATE Python3::NumPy)
 
 include_directories(${PYTHON_INCLUDE_DIRS})
