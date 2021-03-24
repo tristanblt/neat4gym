@@ -62,6 +62,12 @@ void GymShell::save(const std::vector<std::string> &args)
         std::cout << "USAGE: save [filepath]" << std::endl;
         return;
     }
+    try {
+        _agent->neat->save(args[1]);
+
+    } catch(const std::exception &e) {
+        std::cerr << "Error on save" << std::endl;
+    }
 }
 
 void GymShell::load(const std::vector<std::string> &args)
@@ -69,6 +75,12 @@ void GymShell::load(const std::vector<std::string> &args)
     if (args.size() <= 1) {
         std::cout << "USAGE: load [filepath]" << std::endl;
         return;
+    }
+    try {
+        _agent->neat->load(args[1]);
+
+    } catch(const std::exception &e) {
+        std::cerr << "Error on load" << std::endl;
     }
 }
 

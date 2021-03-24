@@ -22,12 +22,13 @@ public:
 
     const RunData &runOne(int runs, bool render);
 
+    std::unique_ptr<neat::NEAT> neat;
+
 private:
     int _outputs;
     RunData _data;
     GymRequests _gr;
     std::string _instanceId;
-    std::unique_ptr<neat::NEAT> _neat;
     const neat::Settings &_settings;
 };
 
