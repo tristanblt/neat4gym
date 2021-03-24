@@ -2,7 +2,8 @@
 
 using namespace neat;
 
-NEAT::NEAT(int pop, int inputs, int outputs):
+NEAT::NEAT(int pop, int inputs, int outputs, const Settings &settings):
+    _settings(settings),
     _pop(pop, outputs, inputs, settings)
 {
     srand(0);
@@ -12,7 +13,7 @@ NEAT::~NEAT() = default;
 
 const std::vector<float> &NEAT::compute(size_t network, const std::vector<float> &inputs)
 {
-    return _pop.compute(network, inputs, settings);
+    return _pop.compute(network, inputs, _settings);
 }
 
 void NEAT::setFitness(size_t network, float fitness)
@@ -20,13 +21,18 @@ void NEAT::setFitness(size_t network, float fitness)
     _pop.setFitness(network, fitness);
 }
 
+size_t NEAT::size() const
+{
+    return _pop.size();
+}
+
 void NEAT::nextGeneration()
 {
     _data.currentGeneration++;
     _data.currentIndividual = 0;
-    _pop.computeSpecies(settings);
-    _pop.purge(settings);
-    _pop.genOffsprings(settings);
+    _pop.computeSpecies(_settings);
+    _pop.purge(_settings);
+    _pop.genOffsprings(_settings);
 }
 
 void NEAT::save(const std::string &filepath)

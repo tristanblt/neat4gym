@@ -70,11 +70,8 @@ float Neuron::computeValue(unsigned turn, const Settings &settings)
     }
     _value = sigmoid(_value, settings);
     _turn = turn;
-    if (std::isnan(_value) || _value < 0.0 || _value > 1.0 || (int)_value < 0 || (int)_value > 1) {
-        std::cout << _value << std::endl;
-        throw "connard";
-        // exit('T');
-    }
+    if (std::isnan(_value) || _value < 0.0 || _value > 1.0 || (int)_value < 0 || (int)_value > 1)
+        _value = 0;
     // std::cout << _value << std::endl;
     return _value;
 }
