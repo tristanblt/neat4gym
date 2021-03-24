@@ -9,7 +9,7 @@ static void sigint_handler(int)
     receivedSigint = true;
 }
 
-std::vector<float> listTupleToVector_Float(PyObject* incoming) {
+static std::vector<float> listTupleToVector_Float(PyObject* incoming) {
     std::vector<float> data;
     for(Py_ssize_t i = 0; i < PyList_Size(incoming); i++) {
         PyObject *value = PyList_GetItem(incoming, i);
@@ -18,7 +18,7 @@ std::vector<float> listTupleToVector_Float(PyObject* incoming) {
     return data;
 }
 
-PyObject* vectorToList_Float(const std::vector<float> &data) {
+static PyObject* vectorToList_Float(const std::vector<float> &data) {
     PyObject* listObj = PyList_New( data.size() );
     if (!listObj) throw std::logic_error("Unable to allocate memory for Python list");
     for (unsigned int i = 0; i < data.size(); i++) {
