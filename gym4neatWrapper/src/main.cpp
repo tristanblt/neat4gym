@@ -3,7 +3,7 @@
 int main(int argc, char const *argv[])
 {
     Agent cartPole("LunarLander-v2", "http://127.0.0.1:12345/v1/", 4);
-    cartPole.run(250, 1);
+    cartPole.run(50, 5);
 
     return 0;
 

@@ -76,7 +76,7 @@ void Species::purge(size_t nb)
     std::sort(_networks.begin(), _networks.end(), [](const Network *n1, const Network *n2) {
         return n1->fitness < n2->fitness;
     });
-    for (size_t i = _networks.size() - 1; i > _networks.size() - nb && i > 0; i--) {
+    for (size_t i = 0; i < nb; i++) {
         _networks[i]->dead = true;
     }
     _networks.erase(std::remove_if(_networks.begin(), _networks.end(), [](Network *elem) {
