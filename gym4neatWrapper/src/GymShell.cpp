@@ -20,7 +20,7 @@ GymShell::GymShell(int challenge, int population)
     int outputs = 0;
     switch (challenge) {
     case 1: {
-        env = "CartPole-v0";
+        env = "CartPole-v1";
         outputs = 2;
         settings.minMutations = 3;
         break;

@@ -5,7 +5,7 @@
 
 namespace neat {
     struct Settings {
-        float toKill = 0.3;
+        float toKill = 0.5;
         float similarity = 2;
         int maxStagnation = 15;
         float crossoverRate = 0.75;
@@ -25,7 +25,7 @@ namespace neat {
         float maxMutationWeight = 1;
 
         static bool doRand(float value) {
-            return rand() % ((int)(1.0 / value) * 1000) < 1000;
+            return value == 0 ? false : rand() % ((int)(1.0 / value) * 1000) < 1000;
         }
     };
 }
