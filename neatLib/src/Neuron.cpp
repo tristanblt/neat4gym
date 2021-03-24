@@ -27,17 +27,6 @@ void Neuron::unlink(Neuron *from, Neuron *to)
     }));
 }
 
-// void Neuron::computeLayersRec(size_t i)
-// {
-//     if (i >= _to.size())
-//         return;
-//     if (_to[i].to->layer < layer + 1) {
-//         _to[i].to->layer = layer + 1;
-//         _to[i].to->computeLayersRec();
-//     }
-//     computeLayersRec(i + 1);
-// }
-
 bool Neuron::hasLoop(Neuron *n) const
 {
     for (auto &link: _to) {

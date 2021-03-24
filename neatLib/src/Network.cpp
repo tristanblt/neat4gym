@@ -167,9 +167,6 @@ bool Network::hasLink(int from, int to) const
 
 bool Network::addLink(int from, int to, int innovationId, float weight)
 {
-    // if (!canAddLink(from, to))
-    //     return false;
-
     if (from == to)
         return false;
     Neuron *n1 = getNeuron(from), *n2 = getNeuron(to);
@@ -182,7 +179,6 @@ bool Network::addLink(int from, int to, int innovationId, float weight)
     }
     if (innovationId != -1)
         _innovations.emplace_back(innovationId, from, to, weight);
-    // n1->computeLayersRec();
     return true;
 }
 
@@ -191,60 +187,6 @@ int Network::createNode(int id)
     _hiddens.emplace_back(std::make_unique<Neuron>(id));
     return id;
 }
-
-// bool Network::canAddLink(int from, int to) const
-// {
-    // if (from == to)
-    //     return false;
-    // int layer1 = -2, layer2 = -2;
-
-    // for (auto &ptr: _inputs) {
-    //     if (ptr->id == from) {
-    //         if (layer2 != -2)
-    //             return false; // cannot link input links together
-    //         // layer1 = ptr->layer;
-    //     } else if (ptr->id == to) {
-    //         if (layer1 != -2)
-    //             return false; // cannot link input links together
-    //         // layer2 = ptr->layer;
-    //     }
-    // }
-    // for (auto &ptr: _hiddens) {
-    //     if (ptr->id == from) {
-    //         layer1 = ptr->layer;
-    //         if (layer1 == -1)
-    //             return true;
-    //         if (layer2 != -2)
-    //             return layer1 <= layer2 && !hasLink(from, to);
-    //     } else if (ptr->id == to) {
-    //         layer2 = ptr->layer;
-    //         if (layer2 == -1)
-    //             return true;
-    //         if (layer1 != -2)
-    //             return layer1 <= layer2 && !hasLink(from, to);
-    //     }
-    // }
-    // // both are outputs
-    // if (layer1 == -2 && layer2 == -2)
-    //     return false;
-    // for (auto &ptr: _outputs) {
-    //     if (ptr->id == from) {
-    //         layer1 = ptr->layer;
-    //         if (layer1 == -1)
-    //             return true;
-    //         if (layer2 != -2)
-    //             return layer1 <= layer2 && !hasLink(from, to);
-    //     } else if (ptr->id == to) {
-    //         layer2 = ptr->layer;
-    //         if (layer2 == -1)
-    //             return true;
-    //         if (layer1 != -2)
-    //             return layer1 <= layer2 && !hasLink(from, to);
-    //     }
-    // }
-    // return false;
-//     return false;
-// }
 
 void Network::rebuildNetwork()
 {

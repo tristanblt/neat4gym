@@ -18,7 +18,6 @@ public:
 
     Agent(const std::string &env, int inputs, int outputs, int population, const neat::Settings &settings);
     ~Agent();
-    // void run(int population, int runs = 1);
 
     const RunData &runOne(int runs, bool render);
 
