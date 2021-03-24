@@ -15,6 +15,7 @@ namespace neat {
          * @param outputs the number of outputs in the network
          */
         Network(int inputs, int outputs);
+        Network(std::vector<Genome> innovations, int inputs, int outputs);
         ~Network() = default;
 
         Network(const Network &network) = delete;
@@ -98,6 +99,11 @@ namespace neat {
          */
         Genome &getRandomLink();
 
+        /**
+         * Returns a random link between two neurons. Will divide by 0 if there are no innovations.
+         */
+        std::vector<Genome> &getInnovations();
+
         float fitness = 0;
         bool dead = false;
         int mutations = 0;
@@ -108,6 +114,7 @@ namespace neat {
          * Rebuilds the network using _innovations.
          */
         void rebuildNetwork();
+        void rebuildNetwork(int inputs, int outputs);
 
         std::vector<std::unique_ptr<Neuron>> _inputs;
         std::vector<std::unique_ptr<Neuron>> _hiddens;

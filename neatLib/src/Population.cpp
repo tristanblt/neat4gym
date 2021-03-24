@@ -5,7 +5,9 @@
 using namespace neat;
 
 Population::Population(int startPopulation, int outputs, int inputs, const Settings &settings):
-    _size(startPopulation)
+    _size(startPopulation),
+    networksInputs(inputs),
+    networksOutputs(outputs)
 {
     _species.emplace_back(this);
     for (int i = 0; i < startPopulation; i++) {
@@ -24,6 +26,19 @@ Population::Population(int startPopulation, int outputs, int inputs, const Setti
         }
     }
     mutateNetworks(settings);
+}
+
+Population::Population(std::vector<std::unique_ptr<Network>> *networks, int outputs, int inputs, const Settings &settings):
+    networksInputs(inputs),
+    networksOutputs(outputs)
+{
+    _networks.swap(*networks);
+    _species.emplace_back(this);
+    for (auto &network : _networks) {
+        _species[0].addNetworkToSpecies(network.get());
+    }
+    _species[0].setRepresentativeNetwork(_networks[0].get());
+    computeSpecies(settings);
 }
 
 void Population::computeBest(const std::vector<float> &inputs, std::vector<float> &outputs, const Settings &settings) const
@@ -203,4 +218,9 @@ void Population::mutateNetworks(const Settings &settings)
     }
     if (didMutation)
         mutateNetworks(settings);
+}
+
+std::vector<std::unique_ptr<Network>> &Population::getNetworks()
+{
+    return _networks;
 }

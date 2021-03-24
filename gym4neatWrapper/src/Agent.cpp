@@ -36,6 +36,8 @@ void Agent::run(int population, int runs)
         _outputs
         );
 
+    neat.load("ez.json");
+
     int generation = 0;
     while(!receivedSigint) {
         for (int episode = 0; episode < population; episode++) {
@@ -71,5 +73,6 @@ void Agent::run(int population, int runs)
         fitnesses.clear();
         std::cout << "Generation: " << generation << " -> average: " << average << ", best: " << best << std::endl;
     }
+    neat.save("ez.json");
     _gr.closeMonitor(_instanceId);
 }

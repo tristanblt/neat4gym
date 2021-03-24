@@ -5,6 +5,8 @@
 #include "Population.hpp"
 #include <functional>
 #include <iostream>
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 namespace neat {
 
@@ -70,7 +72,7 @@ namespace neat {
         Settings settings;
 
         private:
-            Population _pop;
+            Population *_pop;
             Data _data;
 
     };

@@ -7,9 +7,12 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(STANDARD_UNIX_CXX_FLAGS "-W -Wall -Wextra -g")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STANDARD_UNIX_CXX_FLAGS}")
 file(GLOB_RECURSE PROJECT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "${PROJECT_SOURCE_DIR}/neatLib/src/*.cpp" "${PROJECT_SOURCE_DIR}/neatLib/include/*.hpp")
+find_package(nlohmann_json 3.2.0 REQUIRED)
 
 add_library(neatLib SHARED ${PROJECT_SOURCES})
 
 set_target_properties(neatLib PROPERTIES LINKER_LANGUAGE CXX)
 
 target_include_directories(neatLib PUBLIC "${PROJECT_SOURCE_DIR}/neatLib/include/")
+
+target_link_libraries(neatLib PRIVATE nlohmann_json::nlohmann_json)

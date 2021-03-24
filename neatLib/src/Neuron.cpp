@@ -59,9 +59,6 @@ static float sigmoid(float x, const Settings &settings)
 float Neuron::computeValue(unsigned turn, const Settings &settings)
 {
     if (_turn == turn || _from.size() == 0) {
-        // if (_from.size()) {
-            // std::cout << _value << std::endl;
-        // }
         return _value;
     }
     _value = 0;
@@ -70,12 +67,6 @@ float Neuron::computeValue(unsigned turn, const Settings &settings)
     }
     _value = sigmoid(_value, settings);
     _turn = turn;
-    if (std::isnan(_value) || _value < 0.0 || _value > 1.0 || (int)_value < 0 || (int)_value > 1) {
-        std::cout << _value << std::endl;
-        throw "connard";
-        // exit('T');
-    }
-    // std::cout << _value << std::endl;
     return _value;
 }
 
