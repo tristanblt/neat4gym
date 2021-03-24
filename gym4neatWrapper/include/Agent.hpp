@@ -1,7 +1,6 @@
 #ifndef AGENT_HPP_
 #define AGENT_HPP_
 
-#include "GymRequests.hpp"
 #include <string>
 #include <vector>
 #include "NEAT.hpp"
@@ -16,7 +15,7 @@ public:
         bool complete = false;
     };
 
-    Agent(const std::string &env, const std::string &endpoint, int outputs, int population, const neat::Settings &settings);
+    Agent(const std::string &env, int outputs, int population, const neat::Settings &settings);
     ~Agent();
     // void run(int population, int runs = 1);
 
@@ -27,8 +26,6 @@ public:
 private:
     int _outputs;
     RunData _data;
-    GymRequests _gr;
-    std::string _instanceId;
     const neat::Settings &_settings;
 };
 

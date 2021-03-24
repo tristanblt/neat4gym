@@ -9,19 +9,15 @@ static void sigint_handler(int)
     receivedSigint = true;
 }
 
-Agent::Agent(const std::string &env, const std::string &endpoint, int outputs, int population, const neat::Settings &settings):
+Agent::Agent(const std::string &env, const std::string &endpoint, int outputs, int inputs, int population, const neat::Settings &settings):
     _outputs(outputs),
     _settings(settings)
 {
-    _gr.setEndpoint(endpoint);
-    _instanceId = _gr.createInstance(env);
     signal(SIGINT, sigint_handler);
-
-    _gr.startMonitor(_instanceId);
 
     neat = std::make_unique<neat::NEAT>(
         population,
-        _gr.observationSpace(_instanceId).n,
+        inputs,
         _outputs,
         _settings
         );
@@ -37,7 +33,7 @@ Agent::Agent(const std::string &env, const std::string &endpoint, int outputs, i
 
     pDict = PyModule_GetDict(pModule);
     pFunc = PyDict_GetItemString(pDict, "caca");
-
+remove
     if (PyCallable_Check(pFunc)) {
         std::cout << "CHECK" << std::endl;
         PyObject_CallObject(pFunc, NULL);

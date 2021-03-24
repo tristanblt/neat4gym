@@ -48,7 +48,7 @@ GymShell::GymShell(int challenge, int population)
     default:
         throw std::exception();
     }
-    _agent = std::make_unique<Agent>(env, "http://127.0.0.1:12345/v1/", outputs, population, settings);
+    _agent = std::make_unique<Agent>(env, outputs, population, settings);
 }
 
 void GymShell::exit(const std::vector<std::string> &)
