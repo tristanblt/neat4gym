@@ -3,9 +3,9 @@
 
 #include <Python.h>
 
-int main(int argc, char const *argv[])
+int main(int, char const *[])
 {
-    GymShell shell(1, 150);
+    GymShell shell(2, 150);
     shell.run();
     return 0;
 

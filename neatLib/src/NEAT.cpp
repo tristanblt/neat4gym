@@ -110,6 +110,6 @@ void NEAT::load(const std::string &filepath)
     fs.close();
 }
 
-void NEAT::compute(const std::vector<float> &inputs, std::vector<float> &outputs) const
+void NEAT::compute(const std::vector<float> &, std::vector<float> &) const
 {
 }

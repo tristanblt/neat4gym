@@ -49,6 +49,11 @@ bool Neuron::hasLoop(Neuron *n) const
     return false;
 }
 
+static float sigmoid(float x, const Settings &settings)
+{
+    return 1.0 / (1.0 + exp(-x * settings.sigmoidMult));
+}
+
 float Neuron::computeValue(unsigned turn, const Settings &settings)
 {
     if (_turn == turn || _from.size() == 0)
@@ -58,6 +63,7 @@ float Neuron::computeValue(unsigned turn, const Settings &settings)
         _value += from.from->computeValue(turn, settings) * from.weight;
     }
     _turn = turn;
+    _value = sigmoid(_value, settings);
     if (std::isnan(_value))
         _value = 0;
     return _value;

@@ -1,5 +1,6 @@
 #include "Agent.hpp"
 #include <signal.h>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/ndarrayobject.h>
 
 static bool receivedSigint = false;
@@ -46,7 +47,7 @@ Agent::Agent(const std::string &env, int inputs, int outputs, int population, co
         );
 
     Py_Initialize();
-    []()->long{import_array(); return 0;}();
+    []()->void *{import_array(); return 0;}();
     PyObject* myModuleString = PyUnicode_FromString("gym");
     _module = PyImport_Import(myModuleString);
     _gym_make = PyObject_GetAttrString(_module, (char*)"make");

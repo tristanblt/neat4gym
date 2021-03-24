@@ -36,11 +36,6 @@ std::unique_ptr<Network> Network::copy() const
     return n;
 }
 
-static float sigmoid(float x, const Settings &settings)
-{
-    return 1.0 / (1.0 + exp(-x * settings.sigmoidMult));
-}
-
 const std::vector<float> &Network::compute(const std::vector<float> &inputs, const Settings &settings)
 {
     _values.clear();
@@ -50,7 +45,7 @@ const std::vector<float> &Network::compute(const std::vector<float> &inputs, con
     _values.reserve(_outputs.size());
     unsigned turn = _outputs.front()->_turn + 1;
     for (auto &output: _outputs) {
-        _values.push_back(sigmoid(output->computeValue(turn, settings), settings));
+        _values.push_back(output->computeValue(turn, settings));
         if (_values.back() > 1.0)
             _values.back() = 1;
         else if (_values.back() < 0.0)
@@ -263,10 +258,10 @@ void Network::rebuildNetwork(int inputsSize, int outputsSize)
     _outputs.clear();
     int nextNeuronId = 0;
 
-    for (size_t i = 0; i < inputsSize; i++) {
+    for (int i = 0; i < inputsSize; i++) {
         _inputs.push_back(std::make_unique<Neuron>(nextNeuronId++));
     }
-    for (size_t i = 0; i < outputsSize; i++)
+    for (int i = 0; i < outputsSize; i++)
         _outputs.push_back(std::make_unique<Neuron>(nextNeuronId++));
 
     for (auto &genome : _innovations) {

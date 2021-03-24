@@ -20,7 +20,7 @@ namespace neat {
         float similarityCoefDisjoint = 1;
         float similarityCoefWeight = 0.4;
         float mutationChangeWeight = 0.1;
-        int minMutations = 10;
+        int minMutations = 5;
         // float doMutation = 0.9;
         float maxMutationWeight = 1;
 

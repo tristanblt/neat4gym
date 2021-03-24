@@ -5,9 +5,9 @@
 using namespace neat;
 
 Population::Population(int startPopulation, int outputs, int inputs, const Settings &settings):
-    _size(startPopulation),
     networksInputs(inputs),
-    networksOutputs(outputs)
+    networksOutputs(outputs),
+    _size(startPopulation)
 {
     _species.emplace_back(this);
     for (int i = 0; i < startPopulation; i++) {
@@ -19,7 +19,7 @@ Population::Population(int startPopulation, int outputs, int inputs, const Setti
         for (int j = 0; j < outputs; j++) {
             int innovationId = _innovationId++;
             for (auto &network: _networks) {
-                if (!network->addLink(i, j + inputs, innovationId, 0)) {
+                if (!network->addLink(i, j + inputs, innovationId, 1)) {
                     std::cout << i << " " << j + inputs << std::endl;
                 }
             }
@@ -146,7 +146,7 @@ void Population::findOrCreateSpecies(Network *network, const Settings &settings)
     }
 }
 
-void Population::addLink(const std::unique_ptr<Network> &target, const Settings &settings)
+void Population::addLink(const std::unique_ptr<Network> &target, const Settings &)
 {
     int n1 = 0, n2 = 0;
     float weight = (float)(rand() % 200) / 50.0 - 1.0;
