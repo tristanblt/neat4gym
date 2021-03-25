@@ -5,7 +5,7 @@
 
 int main(int, char const *[])
 {
-    GymShell shell(2, 150);
+    GymShell shell(3, 150);
     shell.run();
     return 0;
 }

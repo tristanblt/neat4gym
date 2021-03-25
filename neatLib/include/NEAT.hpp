@@ -66,6 +66,11 @@ namespace neat {
          */
         void compute(const std::vector<float> &inputs, std::vector<float> &outputs) const;
 
+        /**
+         * Returns a network from the population
+         */
+        const neat::Network &network(size_t pos) const;
+
         private:
             const Settings &_settings;
             Population *_pop;

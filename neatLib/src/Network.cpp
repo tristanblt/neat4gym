@@ -26,7 +26,6 @@ Network::Network(std::vector<Genome> innovations, int inputs, int outputs)
     rebuildNetwork(inputs, outputs);
 }
 
-
 std::unique_ptr<Network> Network::copy() const
 {
     std::unique_ptr<Network> n = std::make_unique<Network>(_inputs.size(), _outputs.size());

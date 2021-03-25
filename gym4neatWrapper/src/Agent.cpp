@@ -101,13 +101,14 @@ void Agent::step(const std::vector<float> &action, std::vector<float> &observati
             // }
             values.push_back(action[i] - action[i + 1]);
         }
-        value = vectorToList_Float(values);
-        PyObject* args = PyTuple_Pack(1, value);
-        value = PyObject_CallObject(_numpy_array, args);
-        value = PyObject_CallMethodOneArg(_env, PyUnicode_FromString("step"), value);
+        PyObject *list = vectorToList_Float(values);
+        PyObject *args = PyTuple_Pack(1, list);
+        PyObject *retValue = PyObject_CallObject(_numpy_array, args);
+        value = PyObject_CallMethodOneArg(_env, PyUnicode_FromString("step"), retValue);
     }
     if (value) {
-        observation = listTupleToVector_Float(PyArray_ToList((PyArrayObject *)PyTuple_GetItem(value, 0)));
+        PyObject *list = PyArray_ToList((PyArrayObject *)PyTuple_GetItem(value, 0));
+        observation = listTupleToVector_Float(list);
         fitness = PyFloat_AsDouble(PyTuple_GetItem(value, 1));
         isover = PyObject_IsTrue(PyTuple_GetItem(value, 2));
     } else {
@@ -149,6 +150,8 @@ const Agent::RunData &Agent::runOne(int runs, bool rend)
         fitness = fitness / static_cast<float>(runs);
         _data.fitnesses.push_back(fitness);
         neat->setFitness(i, fitness);
+        if (fitness > _bestFitness)
+            _best = neat->network(i).copy();
         fitness = 0;
     }
 
@@ -161,6 +164,29 @@ const Agent::RunData &Agent::runOne(int runs, bool rend)
 
     _data.average /= _data.fitnesses.size();
     neat->nextGeneration();
+    _data.complete = true;
+    return _data;
+}
+
+const Agent::RunData &Agent::runBest()
+{
+    receivedSigint = false;
+    _data = RunData();
+    if (!_best)
+        return _data;
+    reset();
+    bool isover = false;
+    float fitness = 0;
+    std::vector<float> action;
+    std::vector<float> observation;
+    observation = reset();
+    while (!isover) {
+        if (receivedSigint)
+            return _data;
+        action = _best->compute(observation, _settings);
+        step(action, observation, isover, fitness);
+        render();
+    }
     _data.complete = true;
     return _data;
 }
