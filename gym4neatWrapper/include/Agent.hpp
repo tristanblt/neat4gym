@@ -5,6 +5,7 @@
 #include <vector>
 #include "NEAT.hpp"
 #include <Python.h>
+#include "Network.hpp"
 
 class Agent {
 public:
@@ -27,6 +28,8 @@ public:
     void step(const std::vector<float> &action, std::vector<float> &observations, bool &isover, float &fitness);
     void render();
 
+    const Agent::RunData &runBest();
+
 private:
     int _outputs;
     RunData _data;
@@ -37,6 +40,9 @@ private:
     PyObject *_gym_make;
     PyObject *_numpy_array;
     PyObject *_env;
+
+    std::unique_ptr<neat::Network> _best = nullptr;
+    float _bestFitness = std::numeric_limits<float>().lowest();
 };
 
 #endif /* !AGENT_HPP_ */

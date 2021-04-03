@@ -26,7 +26,6 @@ GymShell::GymShell(int challenge, int population)
         outputs = 2;
         inputs = 4;
         discrete = true;
-        // settings.minMutations = 3;
         break;
     }
     case 2: {
@@ -44,10 +43,11 @@ GymShell::GymShell(int challenge, int population)
         break;
     }
     case 4: {
-        env = "BipedalWalker-v2";
+        env = "BipedalWalker-v3";
         outputs = 8;
         inputs = 24;
         discrete = false;
+        settings.minMutations = 50;
         break;
     }
     case 5: {
@@ -132,12 +132,23 @@ void GymShell::help(const std::vector<std::string> &)
     std::cout << "Commands: exit, load, save, train." << std::endl;
 }
 
+void GymShell::best(const std::vector<std::string> &)
+{
+
+    while (true) {
+        const auto &data = _agent->runBest();
+        if (!data.complete)
+            return;
+    }
+}
+
 static const std::map<std::string, void (GymShell::*)(const std::vector<std::string> &)> commands =
 {
     {"exit", &GymShell::exit},
     {"load", &GymShell::load},
     {"save", &GymShell::save},
     {"train", &GymShell::train},
+    {"best", &GymShell::best},
     {"help", &GymShell::help},
 };
 

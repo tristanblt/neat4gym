@@ -113,3 +113,8 @@ void NEAT::load(const std::string &filepath)
 void NEAT::compute(const std::vector<float> &, std::vector<float> &) const
 {
 }
+
+const Network &NEAT::network(size_t pos) const
+{
+    return *_pop->getNetworks()[pos];
+}
