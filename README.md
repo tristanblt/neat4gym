@@ -1,5 +1,7 @@
 # Gym4Neat
 
+Gym4Neat is a neuroevolution of augmenting topologies library with an agent for OpenAI gym.
+
 ## Install
 
 ```
@@ -8,20 +10,8 @@
 
 ## Run
 
-### First terminal
+From root folder:
 
 ```
-./run_gym.sh
-```
-
-### Second terminal
-
-```
-./gym4neat
-```
-
-## Simple re-compilation
-
-```
-./compile.sh
+./build/bin/gym4neatWrapper
 ```
